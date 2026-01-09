@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { Menu, X, ShoppingBag, Heart, User, LogOut, Package, Store, Leaf } from 'lucide-react';
+import { Menu, X, ShoppingBag, Heart, User, LogOut, Package, Store, Leaf, Search, Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { ThemeToggle } from './ThemeToggle';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { Badge } from '@/components/ui/badge';
+import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,66 +24,106 @@ import {
 } from '@/components/ui/sheet';
 
 const navLinks = [
-  { href: '/', label: 'Shop' },
-  { href: '/sell', label: 'Sell' },
-  { href: '/apply-driver', label: 'Become a Driver' },
+  { href: '/', label: 'Home' },
+  { href: '/?view=shop', label: 'Shop' },
 ];
 
 export function Header() {
   const [isOpen, setIsOpen] = useState(false);
-  const [location] = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [location, setLocation] = useLocation();
   const { isAuthenticated, user, logout } = useAuth();
   const { getItemCount } = useCart();
   const itemCount = getItemCount();
 
   const handleLogout = async () => {
     await logout();
+    setLocation('/');
   };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      setLocation(`/?search=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
+
+  const getInitials = (name: string | undefined) => {
+    if (!name) return 'U';
+    return name
+      .split(' ')
+      .map((n) => n[0])
+      .join('')
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const displayName = user?.full_name || user?.name || 'User';
 
   return (
     <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container mx-auto px-4 md:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between gap-4">
+        <div className="flex h-[72px] items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2" data-testid="link-home">
             <Leaf className="h-7 w-7 text-primary" />
-            <span className="text-xl font-semibold tracking-tight">ReWear</span>
+            <span className="text-xl font-bold tracking-tight text-primary">ReWear</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden lg:flex items-center gap-6">
             {navLinks.map((link) => (
-              <Link key={link.href} href={link.href}>
-                <Button
-                  variant={location === link.href ? 'secondary' : 'ghost'}
-                  className="text-sm font-medium"
-                  data-testid={`link-nav-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
-                >
-                  {link.label}
-                </Button>
+              <Link
+                key={link.href}
+                href={link.href}
+                className={`text-sm font-medium transition-colors hover:text-primary ${
+                  location === link.href ? 'text-primary' : 'text-muted-foreground'
+                }`}
+                data-testid={`link-nav-${link.label.toLowerCase()}`}
+              >
+                {link.label}
               </Link>
             ))}
           </nav>
+
+          <form onSubmit={handleSearch} className="hidden md:flex flex-1 max-w-md mx-4">
+            <div className="relative w-full">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search sustainable fashion..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="pl-10 pr-4 bg-muted/50 border-muted"
+                data-testid="input-search"
+              />
+            </div>
+          </form>
 
           <div className="flex items-center gap-2">
             <ThemeToggle />
 
             {isAuthenticated && (
-              <Link href="/favorites">
-                <Button variant="ghost" size="icon" data-testid="button-favorites">
-                  <Heart className="h-5 w-5" />
-                </Button>
-              </Link>
+              <>
+                <Link href="/sell">
+                  <Button variant="outline" size="sm" className="hidden sm:flex gap-1" data-testid="button-sell">
+                    <Plus className="h-4 w-4" />
+                    Sell Item
+                  </Button>
+                </Link>
+                <Link href="/favorites">
+                  <Button variant="ghost" size="icon" data-testid="button-favorites">
+                    <Heart className="h-5 w-5" />
+                  </Button>
+                </Link>
+              </>
             )}
 
             <Link href="/cart">
               <Button variant="ghost" size="icon" className="relative" data-testid="button-cart">
                 <ShoppingBag className="h-5 w-5" />
                 {itemCount > 0 && (
-                  <Badge
-                    className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center p-0 text-xs"
-                    variant="default"
-                  >
+                  <span className="absolute -top-1 -right-1 h-5 w-5 flex items-center justify-center rounded-full bg-orange-500 text-white text-xs font-semibold">
                     {itemCount}
-                  </Badge>
+                  </span>
                 )}
               </Button>
             </Link>
@@ -89,13 +131,18 @@ export function Header() {
             {isAuthenticated ? (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" data-testid="button-user-menu">
-                    <User className="h-5 w-5" />
+                  <Button variant="ghost" className="flex items-center gap-2 px-2" data-testid="button-user-menu">
+                    <Avatar className="h-8 w-8">
+                      <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
+                        {getInitials(displayName)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="hidden sm:inline text-sm font-medium">{displayName}</span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
                   <div className="px-2 py-1.5">
-                    <p className="text-sm font-medium">{user?.name}</p>
+                    <p className="text-sm font-medium">{displayName}</p>
                     <p className="text-xs text-muted-foreground">{user?.email}</p>
                   </div>
                   <DropdownMenuSeparator />
@@ -121,6 +168,12 @@ export function Header() {
                     <DropdownMenuItem className="cursor-pointer" data-testid="link-favorites-menu">
                       <Heart className="mr-2 h-4 w-4" />
                       Favorites
+                    </DropdownMenuItem>
+                  </Link>
+                  <Link href="/sell">
+                    <DropdownMenuItem className="cursor-pointer" data-testid="link-sell-menu">
+                      <Plus className="mr-2 h-4 w-4" />
+                      Sell an Item
                     </DropdownMenuItem>
                   </Link>
                   <DropdownMenuSeparator />
@@ -160,34 +213,60 @@ export function Header() {
                     ReWear
                   </SheetTitle>
                 </SheetHeader>
-                <nav className="flex flex-col gap-2 mt-8">
-                  {navLinks.map((link) => (
-                    <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
-                      <Button
-                        variant={location === link.href ? 'secondary' : 'ghost'}
-                        className="w-full justify-start"
-                        data-testid={`link-mobile-${link.label.toLowerCase().replace(/\s+/g, '-')}`}
-                      >
-                        {link.label}
-                      </Button>
-                    </Link>
-                  ))}
-                  {!isAuthenticated && (
-                    <>
-                      <div className="my-4 border-t" />
-                      <Link href="/login" onClick={() => setIsOpen(false)}>
-                        <Button variant="outline" className="w-full" data-testid="button-mobile-login">
-                          Login
+                <div className="mt-6">
+                  <form onSubmit={handleSearch} className="mb-4">
+                    <div className="relative">
+                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                      <Input
+                        type="search"
+                        placeholder="Search..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="pl-10"
+                      />
+                    </div>
+                  </form>
+                  <nav className="flex flex-col gap-2">
+                    {navLinks.map((link) => (
+                      <Link key={link.href} href={link.href} onClick={() => setIsOpen(false)}>
+                        <Button
+                          variant={location === link.href ? 'secondary' : 'ghost'}
+                          className="w-full justify-start"
+                        >
+                          {link.label}
                         </Button>
                       </Link>
-                      <Link href="/register" onClick={() => setIsOpen(false)}>
-                        <Button className="w-full" data-testid="button-mobile-register">
-                          Sign Up
-                        </Button>
-                      </Link>
-                    </>
-                  )}
-                </nav>
+                    ))}
+                    {isAuthenticated && (
+                      <>
+                        <Link href="/sell" onClick={() => setIsOpen(false)}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            <Plus className="mr-2 h-4 w-4" />
+                            Sell an Item
+                          </Button>
+                        </Link>
+                        <Link href="/apply-driver" onClick={() => setIsOpen(false)}>
+                          <Button variant="ghost" className="w-full justify-start">
+                            Become a Driver
+                          </Button>
+                        </Link>
+                      </>
+                    )}
+                    {!isAuthenticated && (
+                      <>
+                        <div className="my-4 border-t" />
+                        <Link href="/login" onClick={() => setIsOpen(false)}>
+                          <Button variant="outline" className="w-full">
+                            Login
+                          </Button>
+                        </Link>
+                        <Link href="/register" onClick={() => setIsOpen(false)}>
+                          <Button className="w-full">Sign Up</Button>
+                        </Link>
+                      </>
+                    )}
+                  </nav>
+                </div>
               </SheetContent>
             </Sheet>
           </div>

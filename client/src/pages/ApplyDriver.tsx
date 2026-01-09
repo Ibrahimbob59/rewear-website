@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useLocation } from 'wouter';
-import { Truck, Upload, Loader2, CheckCircle, X } from 'lucide-react';
+import { useQuery } from '@tanstack/react-query';
+import { Truck, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,6 +8,13 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   Form,
   FormControl,
@@ -17,16 +24,18 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import api from '@/services/api';
+import { Link } from 'wouter';
 
 const driverSchema = z.object({
-  full_name: z.string().min(2, 'Full name is required'),
-  email: z.string().email('Valid email is required'),
-  phone: z.string().min(10, 'Valid phone number is required'),
-  address: z.string().min(10, 'Full address is required'),
-  vehicle_type: z.string().min(2, 'Vehicle type is required'),
+  vehicle_type: z.string().min(1, 'Vehicle type is required'),
   license_number: z.string().min(5, 'License number is required'),
-  experience: z.string().optional(),
+  vehicle_plate: z.string().min(3, 'Vehicle plate is required'),
+  experience_years: z.string().min(1, 'Experience years is required'),
+  phone: z.string().min(8, 'Valid phone number is required'),
+  coverage_areas: z.string().min(3, 'Coverage areas are required'),
+  notes: z.string().optional(),
 });
 
 type DriverForm = z.infer<typeof driverSchema>;
@@ -34,52 +43,47 @@ type DriverForm = z.infer<typeof driverSchema>;
 export default function ApplyDriver() {
   const [isLoading, setIsLoading] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [licenseFile, setLicenseFile] = useState<File | null>(null);
-  const [licensePreview, setLicensePreview] = useState<string | null>(null);
   const { toast } = useToast();
+  const { isAuthenticated, user } = useAuth();
+
+  const { data: existingApplication, isLoading: isCheckingApplication } = useQuery({
+    queryKey: ['/api/driver-applications/my-application'],
+    queryFn: async () => {
+      try {
+        const response = await api.driverApplications.getMyApplication();
+        return response.data.data || response.data;
+      } catch {
+        return null;
+      }
+    },
+    enabled: isAuthenticated,
+  });
 
   const form = useForm<DriverForm>({
     resolver: zodResolver(driverSchema),
     defaultValues: {
-      full_name: '',
-      email: '',
-      phone: '',
-      address: '',
       vehicle_type: '',
       license_number: '',
-      experience: '',
+      vehicle_plate: '',
+      experience_years: '',
+      phone: user?.phone || '',
+      coverage_areas: '',
+      notes: '',
     },
   });
-
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setLicenseFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setLicensePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const removeFile = () => {
-    setLicenseFile(null);
-    setLicensePreview(null);
-  };
 
   const onSubmit = async (data: DriverForm) => {
     setIsLoading(true);
     try {
-      const formData = new FormData();
-      Object.entries(data).forEach(([key, value]) => {
-        if (value) formData.append(key, value);
+      await api.driverApplications.apply({
+        vehicle_type: data.vehicle_type,
+        license_number: data.license_number,
+        vehicle_plate: data.vehicle_plate,
+        experience_years: parseInt(data.experience_years),
+        phone: data.phone,
+        coverage_areas: data.coverage_areas.split(',').map(s => s.trim()),
+        notes: data.notes,
       });
-      if (licenseFile) {
-        formData.append('license_image', licenseFile);
-      }
-
-      await api.driver.apply(formData);
       setIsSubmitted(true);
       toast({
         title: 'Application Submitted!',
@@ -96,6 +100,69 @@ export default function ApplyDriver() {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-16">
+        <div className="max-w-md mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
+            <Truck className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Login Required</h1>
+          <p className="text-muted-foreground mb-6">
+            Please login to apply as a driver.
+          </p>
+          <Link href="/login?returnUrl=/apply-driver">
+            <Button data-testid="button-login">Login to Continue</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
+  if (isCheckingApplication) {
+    return (
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-16 text-center">
+        <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
+        <p className="text-muted-foreground mt-4">Checking application status...</p>
+      </div>
+    );
+  }
+
+  if (existingApplication) {
+    const statusColors: Record<string, string> = {
+      pending: 'bg-yellow-500/10 text-yellow-600',
+      under_review: 'bg-blue-500/10 text-blue-600',
+      approved: 'bg-green-500/10 text-green-600',
+      rejected: 'bg-red-500/10 text-red-600',
+    };
+
+    return (
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-16">
+        <div className="max-w-md mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-primary/10 mb-6">
+            {existingApplication.status === 'approved' ? (
+              <CheckCircle className="h-10 w-10 text-primary" />
+            ) : (
+              <AlertCircle className="h-10 w-10 text-primary" />
+            )}
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Application Status</h1>
+          <p className="text-muted-foreground mb-4">
+            You have already submitted a driver application.
+          </p>
+          <div className={`inline-block px-4 py-2 rounded-full font-medium ${statusColors[existingApplication.status] || 'bg-gray-100'}`}>
+            Status: {existingApplication.status?.replace('_', ' ').toUpperCase()}
+          </div>
+          <div className="mt-6">
+            <Link href="/">
+              <Button variant="outline" data-testid="button-back-home">Back to Home</Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (isSubmitted) {
     return (
       <div className="container mx-auto px-4 md:px-6 lg:px-8 py-16">
@@ -108,9 +175,9 @@ export default function ApplyDriver() {
             Thank you for your interest in becoming a ReWear driver.
             We'll review your application and contact you within 2-3 business days.
           </p>
-          <Button onClick={() => window.location.href = '/'} data-testid="button-back-home">
-            Back to Home
-          </Button>
+          <Link href="/">
+            <Button data-testid="button-back-home">Back to Home</Button>
+          </Link>
         </div>
       </div>
     );
@@ -142,70 +209,23 @@ export default function ApplyDriver() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="full_name"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                          <Input placeholder="John Doe" {...field} data-testid="input-full-name" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Email</FormLabel>
-                        <FormControl>
-                          <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </div>
-
-                <FormField
-                  control={form.control}
-                  name="phone"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Phone Number</FormLabel>
-                      <FormControl>
-                        <Input placeholder="+1 (555) 123-4567" {...field} data-testid="input-phone" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <FormField
-                  control={form.control}
-                  name="address"
-                  render={({ field }) => (
-                    <FormItem>
-                      <FormLabel>Address</FormLabel>
-                      <FormControl>
-                        <Textarea placeholder="Your full address..." {...field} data-testid="input-address" />
-                      </FormControl>
-                      <FormMessage />
-                    </FormItem>
-                  )}
-                />
-
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <FormField
-                    control={form.control}
                     name="vehicle_type"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Vehicle Type</FormLabel>
-                        <FormControl>
-                          <Input placeholder="e.g., Car, Motorcycle, Van" {...field} data-testid="input-vehicle-type" />
-                        </FormControl>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-vehicle-type">
+                              <SelectValue placeholder="Select vehicle type" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="car">Car</SelectItem>
+                            <SelectItem value="motorcycle">Motorcycle</SelectItem>
+                            <SelectItem value="van">Van</SelectItem>
+                            <SelectItem value="bicycle">Bicycle</SelectItem>
+                          </SelectContent>
+                        </Select>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -225,55 +245,84 @@ export default function ApplyDriver() {
                   />
                 </div>
 
-                <div className="space-y-2">
-                  <FormLabel>Driver's License Photo (Optional)</FormLabel>
-                  {licensePreview ? (
-                    <div className="relative w-full max-w-xs">
-                      <img
-                        src={licensePreview}
-                        alt="License Preview"
-                        className="w-full aspect-video object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={removeFile}
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
-                      <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="h-8 w-8 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">
-                          Upload license photo
-                        </p>
-                      </div>
-                      <input
-                        type="file"
-                        className="hidden"
-                        accept="image/*"
-                        onChange={handleFileChange}
-                        data-testid="input-license-image"
-                      />
-                    </label>
-                  )}
+                <div className="grid sm:grid-cols-2 gap-4">
+                  <FormField
+                    control={form.control}
+                    name="vehicle_plate"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Vehicle Plate Number</FormLabel>
+                        <FormControl>
+                          <Input placeholder="e.g., ABC 123" {...field} data-testid="input-vehicle-plate" />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="experience_years"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Years of Experience</FormLabel>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl>
+                            <SelectTrigger data-testid="select-experience">
+                              <SelectValue placeholder="Select experience" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            <SelectItem value="0">Less than 1 year</SelectItem>
+                            <SelectItem value="1">1-2 years</SelectItem>
+                            <SelectItem value="3">3-5 years</SelectItem>
+                            <SelectItem value="5">5+ years</SelectItem>
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
                 </div>
 
                 <FormField
                   control={form.control}
-                  name="experience"
+                  name="phone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Previous Delivery Experience (Optional)</FormLabel>
+                      <FormLabel>Phone Number</FormLabel>
+                      <FormControl>
+                        <Input placeholder="+961 XX XXX XXX" {...field} data-testid="input-phone" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="coverage_areas"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Coverage Areas</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Beirut, Mount Lebanon, Tripoli" {...field} data-testid="input-coverage-areas" />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
+                  name="notes"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Additional Notes (Optional)</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Tell us about your delivery experience..."
+                          placeholder="Any additional information about your experience or availability..."
                           {...field}
-                          data-testid="input-experience"
+                          data-testid="input-notes"
                         />
                       </FormControl>
                       <FormMessage />

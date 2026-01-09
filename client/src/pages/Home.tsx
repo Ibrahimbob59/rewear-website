@@ -43,16 +43,15 @@ export default function Home() {
     },
   });
 
-  const { data: categoriesData } = useQuery({
-    queryKey: ['/api/categories'],
-    queryFn: async () => {
-      const response = await api.categories.getAll();
-      return response.data;
-    },
-  });
+  const categories: Category[] = [
+    { id: 1, name: "Women's", slug: 'womens' },
+    { id: 2, name: "Men's", slug: 'mens' },
+    { id: 3, name: 'Kids', slug: 'kids' },
+    { id: 4, name: 'Accessories', slug: 'accessories' },
+    { id: 5, name: 'Shoes', slug: 'shoes' },
+  ];
 
-  const items: Item[] = itemsData?.data || itemsData || [];
-  const categories: Category[] = categoriesData?.data || categoriesData || [];
+  const items: Item[] = itemsData?.data?.items || itemsData?.data || itemsData?.items || itemsData || [];
 
   const handleSearch = () => {
     setFilters((prev) => ({ ...prev, search: searchQuery }));

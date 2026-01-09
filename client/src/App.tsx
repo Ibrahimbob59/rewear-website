@@ -9,7 +9,7 @@ import { CartProvider } from "@/contexts/CartContext";
 import { FavoritesProvider } from "@/contexts/FavoritesContext";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { withProtectedRoute } from "@/components/ProtectedRoute";
+import { ProtectedRoute } from "@/components/ProtectedRoute";
 
 import Home from "@/pages/Home";
 import ItemDetails from "@/pages/ItemDetails";
@@ -26,15 +26,6 @@ import Favorites from "@/pages/Favorites";
 import ApplyDriver from "@/pages/ApplyDriver";
 import NotFound from "@/pages/not-found";
 
-const ProtectedCheckout = withProtectedRoute(Checkout);
-const ProtectedOrders = withProtectedRoute(Orders);
-const ProtectedOrderDetails = withProtectedRoute(OrderDetails);
-const ProtectedProfile = withProtectedRoute(Profile);
-const ProtectedSell = withProtectedRoute(Sell);
-const ProtectedMyListings = withProtectedRoute(MyListings);
-const ProtectedFavorites = withProtectedRoute(Favorites);
-const ProtectedApplyDriver = withProtectedRoute(ApplyDriver);
-
 function Router() {
   return (
     <Switch>
@@ -43,14 +34,30 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/register" component={Register} />
       <Route path="/cart" component={Cart} />
-      <Route path="/checkout" component={ProtectedCheckout} />
-      <Route path="/orders" component={ProtectedOrders} />
-      <Route path="/orders/:id" component={ProtectedOrderDetails} />
-      <Route path="/profile" component={ProtectedProfile} />
-      <Route path="/sell" component={ProtectedSell} />
-      <Route path="/my-listings" component={ProtectedMyListings} />
-      <Route path="/favorites" component={ProtectedFavorites} />
-      <Route path="/apply-driver" component={ProtectedApplyDriver} />
+      <Route path="/checkout">
+        <ProtectedRoute><Checkout /></ProtectedRoute>
+      </Route>
+      <Route path="/orders">
+        <ProtectedRoute><Orders /></ProtectedRoute>
+      </Route>
+      <Route path="/orders/:id">
+        <ProtectedRoute><OrderDetails /></ProtectedRoute>
+      </Route>
+      <Route path="/profile">
+        <ProtectedRoute><Profile /></ProtectedRoute>
+      </Route>
+      <Route path="/sell">
+        <ProtectedRoute><Sell /></ProtectedRoute>
+      </Route>
+      <Route path="/my-listings">
+        <ProtectedRoute><MyListings /></ProtectedRoute>
+      </Route>
+      <Route path="/favorites">
+        <ProtectedRoute><Favorites /></ProtectedRoute>
+      </Route>
+      <Route path="/apply-driver">
+        <ProtectedRoute><ApplyDriver /></ProtectedRoute>
+      </Route>
       <Route component={NotFound} />
     </Switch>
   );

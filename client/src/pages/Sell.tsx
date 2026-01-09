@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useLocation } from 'wouter';
-import { useQuery } from '@tanstack/react-query';
+import { useLocation, Link } from 'wouter';
 import { Upload, Loader2, Tag, DollarSign, Image as ImageIcon, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -27,10 +26,19 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
+import { useAuth } from '@/contexts/AuthContext';
 import api, { type Category } from '@/services/api';
 
 const conditions = ['New', 'Like New', 'Good', 'Fair'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size'];
+
+const categories: Category[] = [
+  { id: 1, name: "Women's", slug: 'womens' },
+  { id: 2, name: "Men's", slug: 'mens' },
+  { id: 3, name: 'Kids', slug: 'kids' },
+  { id: 4, name: 'Accessories', slug: 'accessories' },
+  { id: 5, name: 'Shoes', slug: 'shoes' },
+];
 
 const sellSchema = z.object({
   title: z.string().min(3, 'Title must be at least 3 characters'),
@@ -53,16 +61,7 @@ export default function Sell() {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [, setLocation] = useLocation();
   const { toast } = useToast();
-
-  const { data: categoriesData } = useQuery({
-    queryKey: ['/api/categories'],
-    queryFn: async () => {
-      const response = await api.categories.getAll();
-      return response.data;
-    },
-  });
-
-  const categories: Category[] = categoriesData?.data || categoriesData || [];
+  const { isAuthenticated } = useAuth();
 
   const form = useForm<SellForm>({
     resolver: zodResolver(sellSchema),
@@ -139,6 +138,25 @@ export default function Sell() {
     }
   };
 
+  if (!isAuthenticated) {
+    return (
+      <div className="container mx-auto px-4 md:px-6 lg:px-8 py-16">
+        <div className="max-w-md mx-auto text-center">
+          <div className="inline-flex items-center justify-center w-20 h-20 rounded-full bg-muted mb-6">
+            <Tag className="h-10 w-10 text-muted-foreground" />
+          </div>
+          <h1 className="text-2xl font-bold mb-2">Login Required</h1>
+          <p className="text-muted-foreground mb-6">
+            Please login to list an item for sale or donation.
+          </p>
+          <Link href="/login?returnUrl=/sell">
+            <Button data-testid="button-login">Login to Continue</Button>
+          </Link>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
       <div className="max-w-2xl mx-auto">
@@ -178,18 +196,21 @@ export default function Sell() {
                         size="icon"
                         className="absolute top-2 right-2"
                         onClick={removeImage}
+                        data-testid="button-remove-image"
                       >
                         <X className="h-4 w-4" />
                       </Button>
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
+                    <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors" data-testid="label-upload-image">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                        <Upload className="h-10 w-10 text-muted-foreground mb-3" />
+                        <Upload className="h-10 w-10 text-muted-foreground mb-2" />
                         <p className="text-sm text-muted-foreground">
-                          <span className="font-medium">Click to upload</span> or drag and drop
+                          Click to upload item photo
                         </p>
-                        <p className="text-xs text-muted-foreground">PNG, JPG up to 10MB</p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          PNG, JPG up to 5MB
+                        </p>
                       </div>
                       <input
                         type="file"
@@ -224,7 +245,7 @@ export default function Sell() {
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Describe your item, including any details about its condition, fit, etc."
+                          placeholder="Describe your item in detail - material, fit, any flaws, etc."
                           className="min-h-[100px]"
                           {...field}
                           data-testid="input-description"
@@ -242,7 +263,7 @@ export default function Sell() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Category</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-category">
                               <SelectValue placeholder="Select category" />
@@ -267,7 +288,7 @@ export default function Sell() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Condition</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-condition">
                               <SelectValue placeholder="Select condition" />
@@ -294,7 +315,7 @@ export default function Sell() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Size (Optional)</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
                             <SelectTrigger data-testid="select-size">
                               <SelectValue placeholder="Select size" />
@@ -320,7 +341,7 @@ export default function Sell() {
                       <FormItem>
                         <FormLabel>Brand (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Levi's" {...field} data-testid="input-brand" />
+                          <Input placeholder="e.g., Zara, H&M" {...field} data-testid="input-brand" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -358,7 +379,7 @@ export default function Sell() {
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
                           <DollarSign className="h-4 w-4" />
-                          Price
+                          Price (USD)
                         </FormLabel>
                         <FormControl>
                           <Input
@@ -382,11 +403,10 @@ export default function Sell() {
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                       Listing...
                     </>
+                  ) : isDonation ? (
+                    'List as Donation'
                   ) : (
-                    <>
-                      <Upload className="mr-2 h-4 w-4" />
-                      {isDonation ? 'List as Donation' : 'List for Sale'}
-                    </>
+                    'List for Sale'
                   )}
                 </Button>
               </form>
