@@ -1,0 +1,2610 @@
+<!DOCTYPE html>
+<!-- saved from url=(0200)file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html# -->
+<html lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReWear - Sustainable Fashion Marketplace</title>
+    <link rel="stylesheet" href="./ReWear - Sustainable Fashion Marketplace_files/all.min.css">
+    <link href="./ReWear - Sustainable Fashion Marketplace_files/css2" rel="stylesheet">
+    <style>
+        :root {
+            /* Color Palette */
+            --primary-50: #f0f9f4;
+            --primary-100: #dcf0e3;
+            --primary-200: #bce2ca;
+            --primary-300: #8fcca9;
+            --primary-400: #5aae80;
+            --primary-500: #3a9464;
+            --primary-600: #2a7a51;
+            --primary-700: #216142;
+            --primary-800: #1c4e36;
+            --primary-900: #18412e;
+            
+            --secondary-50: #faf9f7;
+            --secondary-100: #f0ede8;
+            --secondary-200: #e4ded5;
+            --secondary-300: #d4cab9;
+            --secondary-400: #c2b399;
+            --secondary-500: #b09e82;
+            --secondary-600: #9c8a6e;
+            --secondary-700: #81725c;
+            --secondary-800: #6a5e4e;
+            --secondary-900: #574d41;
+            
+            --accent-50: #fef6ef;
+            --accent-100: #fdebd9;
+            --accent-200: #f9d3b1;
+            --accent-300: #f4b47f;
+            --accent-400: #ee8c4c;
+            --accent-500: #e9712d;
+            --accent-600: #da5b22;
+            --accent-700: #b5471e;
+            --accent-800: #903a1f;
+            --accent-900: #74321c;
+            
+            --gray-50: #f9fafb;
+            --gray-100: #f3f4f6;
+            --gray-200: #e5e7eb;
+            --gray-300: #d1d5db;
+            --gray-400: #9ca3af;
+            --gray-500: #6b7280;
+            --gray-600: #4b5563;
+            --gray-700: #374151;
+            --gray-800: #1f2937;
+            --gray-900: #111827;
+            
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 6px 30px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 10px 40px rgba(0, 0, 0, 0.1);
+            
+            --radius-sm: 0.375rem;
+            --radius: 0.75rem;
+            --radius-lg: 1rem;
+            --radius-xl: 1.5rem;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            color: var(--gray-800);
+            background-color: var(--secondary-50);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', system-ui, sans-serif;
+            font-weight: 600;
+            line-height: 1.3;
+            color: var(--gray-900);
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1.25rem;
+        }
+        
+        h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 0.75rem;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+        }
+        
+        a {
+            color: var(--primary-600);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+        
+        a:hover {
+            color: var(--primary-800);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border-radius: var(--radius);
+            font-weight: 500;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border: none;
+            font-family: 'Inter', sans-serif;
+            gap: 0.5rem;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-600);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: var(--primary-700);
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-200);
+            color: var(--gray-800);
+        }
+        
+        .btn-secondary:hover {
+            background-color: var(--secondary-300);
+        }
+        
+        .btn-outline {
+            background-color: transparent;
+            border: 1px solid var(--gray-300);
+            color: var(--gray-700);
+        }
+        
+        .btn-outline:hover {
+            border-color: var(--primary-500);
+            color: var(--primary-600);
+        }
+        
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .btn-lg {
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .btn-full {
+            width: 100%;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+        
+        .badge-success {
+            background-color: var(--primary-100);
+            color: var(--primary-800);
+        }
+        
+        .badge-warning {
+            background-color: #fef3c7;
+            color: #92400e;
+        }
+        
+        .badge-neutral {
+            background-color: var(--gray-100);
+            color: var(--gray-700);
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .card-body {
+            padding: 1.5rem;
+        }
+        
+        .card-title {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .card-text {
+            color: var(--gray-600);
+            font-size: 0.95rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+        
+        .card-footer {
+            padding: 1rem 1.5rem;
+            border-top: 1px solid var(--gray-100);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Navbar Styles */
+        .navbar {
+            background-color: white;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .navbar-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 72px;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-700);
+        }
+        
+        .logo-icon {
+            color: var(--primary-600);
+        }
+        
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--gray-700);
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary-600);
+        }
+        
+        .nav-link.active {
+            color: var(--primary-600);
+            position: relative;
+        }
+        
+        .nav-link.active::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: var(--primary-600);
+        }
+        
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: var(--gray-50);
+            border-radius: var(--radius);
+            padding: 0.5rem 1rem;
+            width: 400px;
+            border: 1px solid var(--gray-200);
+        }
+        
+        .search-input {
+            flex: 1;
+            border: none;
+            background: transparent;
+            padding: 0.5rem;
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-800);
+            outline: none;
+        }
+        
+        .search-button {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+        }
+        
+        .cart-icon {
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--accent-500);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.5rem;
+            border-radius: var(--radius);
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        
+        .user-menu:hover {
+            background-color: var(--gray-50);
+        }
+        
+        .user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--primary-100);
+            color: var(--primary-700);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+        }
+        
+        /* Hero Section */
+        .hero {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary-50) 0%, var(--secondary-50) 100%);
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--gray-900);
+        }
+        
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray-600);
+            margin-bottom: 2rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Items Grid */
+        .section {
+            padding: 4rem 0;
+        }
+        
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+        
+        .filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+        
+        .filter-label {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--gray-300);
+            background-color: white;
+            font-family: 'Inter', sans-serif;
+            color: var(--gray-800);
+            min-width: 150px;
+        }
+        
+        .items-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: var(--primary-900);
+            color: white;
+            padding: 4rem 0 2rem;
+            margin-top: 4rem;
+        }
+        
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: white;
+        }
+        
+        .footer-heading {
+            font-size: 1.125rem;
+            margin-bottom: 1.5rem;
+            color: white;
+        }
+        
+        .footer-links {
+            list-style: none;
+        }
+        
+        .footer-link {
+            margin-bottom: 0.75rem;
+        }
+        
+        .footer-link a {
+            color: var(--primary-200);
+            transition: color 0.2s ease;
+        }
+        
+        .footer-link a:hover {
+            color: white;
+        }
+        
+        .footer-bottom {
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            text-align: center;
+            color: var(--primary-300);
+            font-size: 0.875rem;
+        }
+        
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        
+        .modal {
+            background-color: white;
+            border-radius: var(--radius-xl);
+            width: 90%;
+            max-width: 500px;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: modalFadeIn 0.3s ease;
+        }
+        
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .modal-header {
+            padding: 1.5rem 1.5rem 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--gray-200);
+        }
+        
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--gray-500);
+        }
+        
+        .modal-body {
+            padding: 1.5rem;
+        }
+        
+        .modal-footer {
+            padding: 1rem 1.5rem 1.5rem;
+            border-top: 1px solid var(--gray-200);
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+        }
+        
+        /* Form Elements */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--gray-700);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--gray-300);
+            border-radius: var(--radius);
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            color: var(--gray-800);
+            transition: border-color 0.2s ease;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-500);
+            box-shadow: 0 0 0 3px rgba(58, 148, 100, 0.1);
+        }
+        
+        /* Cart Page */
+        .cart-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 3rem;
+        }
+        
+        .cart-items {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .cart-item {
+            display: flex;
+            gap: 1.5rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .cart-item-image {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+        
+        .cart-item-details {
+            flex: 1;
+        }
+        
+        .cart-item-title {
+            font-size: 1.125rem;
+            margin-bottom: 0.5rem;
+        }
+        
+        .cart-item-price {
+            font-weight: 600;
+            color: var(--primary-700);
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+        }
+        
+        .cart-item-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .quantity-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--gray-100);
+            border: none;
+            cursor: pointer;
+            color: var(--gray-700);
+        }
+        
+        .quantity-btn:hover {
+            background-color: var(--gray-200);
+        }
+        
+        .quantity-display {
+            font-weight: 500;
+            min-width: 40px;
+            text-align: center;
+        }
+        
+        .remove-item {
+            background: none;
+            border: none;
+            color: var(--gray-500);
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .remove-item:hover {
+            color: var(--error);
+        }
+        
+        .cart-summary {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+            position: sticky;
+            top: 100px;
+        }
+        
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--gray-100);
+        }
+        
+        .summary-row.total {
+            border-bottom: none;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-top: 1rem;
+            color: var(--gray-900);
+        }
+        
+        /* Item Detail Page */
+        .item-detail-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            background-color: white;
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+        
+        .item-image-large {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: var(--radius-lg);
+        }
+        
+        .item-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .item-condition {
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+        
+        .item-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-700);
+            margin-bottom: 2rem;
+        }
+        
+        .item-description {
+            line-height: 1.7;
+            margin-bottom: 2rem;
+            color: var(--gray-700);
+        }
+        
+        .item-actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: auto;
+        }
+        
+        /* Orders Page */
+        .orders-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .order-card {
+            padding: 2rem;
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+            transition: transform 0.2s ease;
+        }
+        
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+        
+        .order-id {
+            font-weight: 600;
+            color: var(--gray-700);
+        }
+        
+        .order-date {
+            color: var(--gray-500);
+            font-size: 0.9rem;
+        }
+        
+        .order-items {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+        
+        .order-item-image {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: var(--radius);
+        }
+        
+        .order-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .order-total {
+            font-weight: 700;
+            font-size: 1.25rem;
+            color: var(--primary-700);
+        }
+        
+        /* Profile Page */
+        .profile-container {
+            display: grid;
+            grid-template-columns: 1fr 3fr;
+            gap: 3rem;
+        }
+        
+        .profile-sidebar {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            height: fit-content;
+        }
+        
+        .profile-nav {
+            list-style: none;
+        }
+        
+        .profile-nav-item {
+            margin-bottom: 0.5rem;
+        }
+        
+        .profile-nav-link {
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: var(--radius);
+            color: var(--gray-700);
+            transition: all 0.2s ease;
+        }
+        
+        .profile-nav-link:hover,
+        .profile-nav-link.active {
+            background-color: var(--primary-50);
+            color: var(--primary-700);
+        }
+        
+        .profile-content {
+            background-color: white;
+            border-radius: var(--radius-lg);
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 1024px) {
+            .items-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+            
+            .footer-content {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .cart-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .item-detail-container {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .navbar-container {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 1rem 0;
+            }
+            
+            .search-bar {
+                order: 3;
+                width: 100%;
+                margin-top: 1rem;
+            }
+            
+            .hero-title {
+                font-size: 2.25rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .filters {
+                flex-wrap: wrap;
+            }
+            
+            .profile-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .cart-item {
+                flex-direction: column;
+            }
+            
+            .cart-item-image {
+                width: 100%;
+                height: 200px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .items-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .item-detail-container {
+                padding: 1.5rem;
+            }
+            
+            .item-actions {
+                flex-direction: column;
+            }
+            
+            .item-actions .btn {
+                width: 100%;
+            }
+        }
+        
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+        
+        .text-primary {
+            color: var(--primary-600);
+        }
+        
+        .text-secondary {
+            color: var(--gray-600);
+        }
+        
+        .mb-1 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .mb-2 {
+            margin-bottom: 1rem;
+        }
+        
+        .mb-3 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mb-4 {
+            margin-bottom: 2rem;
+        }
+        
+        .mt-1 {
+            margin-top: 0.5rem;
+        }
+        
+        .mt-2 {
+            margin-top: 1rem;
+        }
+        
+        .mt-3 {
+            margin-top: 1.5rem;
+        }
+        
+        .mt-4 {
+            margin-top: 2rem;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        /* Page Transitions */
+        .page {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .page.active {
+            display: block;
+        }
+        
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        /* Loading State */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 0.8s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            background-color: white;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow);
+        }
+        
+        .empty-state-icon {
+            font-size: 3rem;
+            color: var(--gray-300);
+            margin-bottom: 1.5rem;
+        }
+        
+        .empty-state-title {
+            font-size: 1.5rem;
+            margin-bottom: 0.75rem;
+            color: var(--gray-800);
+        }
+        
+        .empty-state-description {
+            color: var(--gray-600);
+            max-width: 400px;
+            margin: 0 auto 2rem;
+        }
+    </style>
+<style type="text/css" id="operaUserStyle"></style><style>
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        </style></head>
+<body>
+    <!-- Navbar -->
+    <header class="navbar">
+        <div class="container navbar-container">
+            <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="logo" onclick="showPage(&#39;home&#39;)">
+                <i class="fas fa-leaf logo-icon"></i>
+                ReWear
+            </a>
+            
+            <div class="nav-links">
+                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="nav-link active" onclick="showPage(&#39;home&#39;)">Home</a>
+                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="nav-link" onclick="showPage(&#39;items&#39;)">Shop</a>
+                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="nav-link" onclick="showPage(&#39;about&#39;)">About</a>
+                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="nav-link" onclick="showPage(&#39;impact&#39;)">Our Impact</a>
+            </div>
+            
+            <div class="search-bar">
+                <input type="text" class="search-input" placeholder="Search sustainable fashion...">
+                <button class="search-button">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+            
+            <div class="nav-links">
+                <div class="cart-icon" onclick="showPage(&#39;cart&#39;)">
+                    <i class="fas fa-shopping-bag" style="font-size: 1.25rem;"></i>
+                    <span class="cart-count" id="cartCount">4</span>
+                </div>
+                
+                <div class="user-menu" onclick="showPage(&#39;profile&#39;)">
+                    <div class="user-avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Home Page -->
+    <main id="home" class="page active">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container hero-content">
+                <h1 class="hero-title">Sustainable Fashion, Reimagined</h1>
+                <p class="hero-subtitle">
+                    Give pre-loved clothing a second life. Shop consciously, reduce waste, 
+                    and join the circular economy movement with ReWear.
+                </p>
+                <div style="display: flex; gap: 1rem; justify-content: center;">
+                    <button class="btn btn-primary btn-lg" onclick="showPage(&#39;items&#39;)">
+                        <i class="fas fa-shopping-bag"></i> Shop Now
+                    </button>
+                    <button class="btn btn-outline btn-lg" onclick="showPage(&#39;about&#39;)">
+                        <i class="fas fa-info-circle"></i> Learn More
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Items -->
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h2>Featured Sustainable Items</h2>
+                    <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="btn btn-outline" onclick="showPage(&#39;items&#39;)">View All</a>
+                </div>
+                
+                <div class="items-grid" id="featuredItems">
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb" alt="Designer Wool Blend Coat" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Designer Wool Blend Coat</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Women's Outerwear</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$89.99</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(1)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1496747611176-843222e1e57c" alt="Organic Cotton T-Shirt" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Organic Cotton T-Shirt</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Women's Tops</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$24.99</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(2)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1544441893-675973e31985" alt="Denim Jacket" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Denim Jacket</h3>
+                            <div class="badge badge-warning mb-2">Good</div>
+                            <p class="card-text">Men's Outerwear</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$45.50</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(3)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1523381210434-271e8be1f52b" alt="Linen Button-Down Shirt" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Linen Button-Down Shirt</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Men's Shirts</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$32.75</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(4)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Impact Stats -->
+        <section class="section" style="background-color: var(--primary-50); border-radius: var(--radius-xl);">
+            <div class="container">
+                <h2 class="text-center mb-4">Our Environmental Impact</h2>
+                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center;">
+                    <div>
+                        <h3 class="text-primary" style="font-size: 2.5rem;">1,240+</h3>
+                        <p>Items Saved from Landfills</p>
+                    </div>
+                    <div>
+                        <h3 class="text-primary" style="font-size: 2.5rem;">3.5T</h3>
+                        <p>CO₂ Emissions Reduced</p>
+                    </div>
+                    <div>
+                        <h3 class="text-primary" style="font-size: 2.5rem;">2,800+</h3>
+                        <p>Happy Customers</p>
+                    </div>
+                    <div>
+                        <h3 class="text-primary" style="font-size: 2.5rem;">15M</h3>
+                        <p>Liters of Water Saved</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="section">
+            <div class="container">
+                <h2 class="text-center mb-4">How ReWear Works</h2>
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                <i class="fas fa-recycle"></i>
+                            </div>
+                            <h3 class="card-title">1. List Quality Items</h3>
+                            <p class="card-text">Users list gently used clothing items that meet our quality standards.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h3 class="card-title">2. Shop Consciously</h3>
+                            <p class="card-text">Browse curated sustainable fashion with detailed condition descriptions.</p>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card-body text-center">
+                            <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                <i class="fas fa-truck"></i>
+                            </div>
+                            <h3 class="card-title">3. Eco-Friendly Delivery</h3>
+                            <p class="card-text">Receive your items in sustainable packaging with carbon-neutral shipping.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Items Page -->
+    <main id="items" class="page">
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Sustainable Fashion Marketplace</h1>
+                    <div style="display: flex; gap: 1rem;">
+                        <button class="btn btn-outline" onclick="showFilterModal()">
+                            <i class="fas fa-filter"></i> Filters
+                        </button>
+                        <select class="filter-select">
+                            <option>Sort by: Newest</option>
+                            <option>Price: Low to High</option>
+                            <option>Price: High to Low</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="filters">
+                    <div class="filter-group">
+                        <div class="filter-label">Category</div>
+                        <select class="filter-select">
+                            <option>All Categories</option>
+                            <option>Women's Clothing</option>
+                            <option>Men's Clothing</option>
+                            <option>Accessories</option>
+                            <option>Shoes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Condition</div>
+                        <select class="filter-select">
+                            <option>Any Condition</option>
+                            <option>Like New</option>
+                            <option>Good</option>
+                            <option>Fair</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <div class="filter-label">Price Range</div>
+                        <select class="filter-select">
+                            <option>Any Price</option>
+                            <option>Under $25</option>
+                            <option>$25 - $50</option>
+                            <option>$50 - $100</option>
+                            <option>Over $100</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="items-grid" id="allItems">
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb" alt="Designer Wool Blend Coat" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Designer Wool Blend Coat</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Women's Outerwear</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$89.99</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(1)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1496747611176-843222e1e57c" alt="Organic Cotton T-Shirt" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Organic Cotton T-Shirt</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Women's Tops</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$24.99</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(2)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1544441893-675973e31985" alt="Denim Jacket" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Denim Jacket</h3>
+                            <div class="badge badge-warning mb-2">Good</div>
+                            <p class="card-text">Men's Outerwear</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$45.50</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(3)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1523381210434-271e8be1f52b" alt="Linen Button-Down Shirt" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Linen Button-Down Shirt</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Men's Shirts</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$32.75</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(4)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1515347619252-60a4bf4fff4f" alt="Sustainable Sneakers" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Sustainable Sneakers</h3>
+                            <div class="badge badge-warning mb-2">Good</div>
+                            <p class="card-text">Shoes</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$65.00</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(5)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1515372039744-b8f02a3ae446" alt="Knit Sweater" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Knit Sweater</h3>
+                            <div class="badge badge-neutral mb-2">Fair</div>
+                            <p class="card-text">Women's Sweaters</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$38.99</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(6)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1584917865442-de89df76afd3" alt="Vintage Leather Bag" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Vintage Leather Bag</h3>
+                            <div class="badge badge-warning mb-2">Good</div>
+                            <p class="card-text">Accessories</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$75.25</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(7)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                
+                    <div class="card">
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1544441893-675973e31985" alt="Wide-Leg Trousers" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">Wide-Leg Trousers</h3>
+                            <div class="badge badge-success mb-2">Like New</div>
+                            <p class="card-text">Women's Pants</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$42.00</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(8)">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Item Detail Page -->
+    <main id="itemDetail" class="page">
+        <section class="section">
+            <div class="container">
+                <button class="btn btn-outline mb-4" onclick="showPage(&#39;items&#39;)">
+                    <i class="fas fa-arrow-left"></i> Back to Shop
+                </button>
+                
+                <div class="item-detail-container">
+                    <div>
+                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb(1)" alt="Item" class="item-image-large">
+                    </div>
+                    <div class="item-info">
+                        <span class="badge badge-success mb-2">Like New</span>
+                        <h1>Designer Wool Blend Coat</h1>
+                        <div class="item-price">$89.99</div>
+                        
+                        <div class="mb-3">
+                            <div class="text-secondary mb-1">Category: Women's Outerwear</div>
+                            <div class="text-secondary mb-1">Brand: Sustainable Fashion Co.</div>
+                            <div class="text-secondary mb-1">Material: 70% Wool, 30% Recycled Polyester</div>
+                        </div>
+                        
+                        <p class="item-description">
+                            This beautiful wool blend coat is in excellent condition, worn only a handful of times. 
+                            It features a classic design that never goes out of style, perfect for transitional weather. 
+                            The coat is fully lined and has two functional pockets. Dry cleaned and ready for its new home.
+                        </p>
+                        
+                        <div class="mb-3">
+                            <h4>Size &amp; Fit</h4>
+                            <p>Size: Medium | Fits true to size</p>
+                        </div>
+                        
+                        <div class="mb-4">
+                            <h4>Sustainability Impact</h4>
+                            <p>By choosing this pre-loved item, you're saving approximately 2,700 liters of water and reducing CO₂ emissions by 6kg compared to buying new.</p>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <button class="btn btn-primary btn-lg" style="flex: 1;" onclick="addToCart()">
+                                <i class="fas fa-shopping-cart"></i> Add to Cart
+                            </button>
+                            <button class="btn btn-outline btn-lg">
+                                <i class="far fa-heart"></i> Save
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Cart Page -->
+    <main id="cart" class="page">
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Your Shopping Cart</h1>
+                    <button class="btn btn-outline" onclick="showPage(&#39;items&#39;)">
+                        <i class="fas fa-arrow-left"></i> Continue Shopping
+                    </button>
+                </div>
+                
+                <div class="cart-container">
+                    <div class="cart-items">
+                        <div class="cart-item">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb" alt="Item" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-title">Designer Wool Blend Coat</h3>
+                                <div class="badge badge-success mb-2">Like New</div>
+                                <div class="cart-item-price">$89.99</div>
+                                <div class="cart-item-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="quantity-display">1</span>
+                                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <button class="remove-item" onclick="removeCartItem(this)">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-item">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1496747611176-843222e1e57c" alt="Item" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-title">Organic Cotton T-Shirt</h3>
+                                <div class="badge badge-success mb-2">Like New</div>
+                                <div class="cart-item-price">$24.99</div>
+                                <div class="cart-item-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="quantity-display">2</span>
+                                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <button class="remove-item" onclick="removeCartItem(this)">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="cart-item">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1544441893-675973e31985" alt="Item" class="cart-item-image">
+                            <div class="cart-item-details">
+                                <h3 class="cart-item-title">Denim Jacket</h3>
+                                <div class="badge badge-warning mb-2">Good Condition</div>
+                                <div class="cart-item-price">$45.50</div>
+                                <div class="cart-item-actions">
+                                    <div class="quantity-control">
+                                        <button class="quantity-btn" onclick="updateQuantity(this, -1)">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                        <span class="quantity-display">1</span>
+                                        <button class="quantity-btn" onclick="updateQuantity(this, 1)">
+                                            <i class="fas fa-plus"></i>
+                                        </button>
+                                    </div>
+                                    <button class="remove-item" onclick="removeCartItem(this)">
+                                        <i class="fas fa-trash"></i> Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h3 class="mb-3">Order Summary</h3>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>$185.47</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>$4.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Environmental Impact Fee</span>
+                            <span>$2.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>$192.46</span>
+                        </div>
+                        <button class="btn btn-primary btn-full btn-lg mt-3" onclick="showPage(&#39;checkout&#39;)">
+                            Proceed to Checkout
+                        </button>
+                        <p class="text-center text-secondary mt-2" style="font-size: 0.875rem;">
+                            <i class="fas fa-leaf"></i> Your purchase saves approximately 8,100 liters of water
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Checkout Page -->
+    <main id="checkout" class="page">
+        <section class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1>Checkout</h1>
+                    <button class="btn btn-outline" onclick="showPage(&#39;cart&#39;)">
+                        <i class="fas fa-arrow-left"></i> Back to Cart
+                    </button>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem;">
+                    <div class="card">
+                        <div class="card-body">
+                            <h3 class="mb-3">Shipping Information</h3>
+                            <form id="checkoutForm">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" value="John Doe">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" value="john.doe@example.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Shipping Address</label>
+                                    <textarea class="form-control" rows="3">123 Green Street, Eco City, EC 12345</textarea>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Shipping Method</label>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <input type="radio" name="shipping" checked="">
+                                            <span>Standard Shipping (5-7 business days) - $4.99</span>
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <input type="radio" name="shipping">
+                                            <span>Carbon-Neutral Express (2-3 business days) - $9.99</span>
+                                        </label>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Payment Method</label>
+                                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <input type="radio" name="payment" checked="">
+                                            <span>Credit/Debit Card</span>
+                                        </label>
+                                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                            <input type="radio" name="payment">
+                                            <span>PayPal</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="cart-summary">
+                        <h3 class="mb-3">Order Summary</h3>
+                        <div class="summary-row">
+                            <span>Subtotal (3 items)</span>
+                            <span>$185.47</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Shipping</span>
+                            <span>$4.99</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Environmental Impact Fee</span>
+                            <span>$2.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>$192.46</span>
+                        </div>
+                        <button class="btn btn-primary btn-full btn-lg mt-3" onclick="placeOrder()">
+                            <i class="fas fa-lock"></i> Place Order
+                        </button>
+                        <p class="text-center text-secondary mt-2" style="font-size: 0.875rem;">
+                            <i class="fas fa-shield-alt"></i> Secure checkout
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Orders Page -->
+    <main id="orders" class="page">
+        <section class="section">
+            <div class="container">
+                <h1 class="mb-4">Your Orders</h1>
+                
+                <div class="orders-list">
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Order #RW-2023-0876</div>
+                                <div class="order-date">Placed on October 15, 2023</div>
+                            </div>
+                            <span class="badge badge-success">Delivered</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb(2)" alt="Item" class="order-item-image">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1496747611176-843222e1e57c(1)" alt="Item" class="order-item-image">
+                        </div>
+                        
+                        <div class="order-footer">
+                            <button class="btn btn-outline btn-sm" onclick="showOrderDetail()">
+                                View Details
+                            </button>
+                            <div class="order-total">$114.98</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Order #RW-2023-0654</div>
+                                <div class="order-date">Placed on September 28, 2023</div>
+                            </div>
+                            <span class="badge badge-success">Delivered</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1544441893-675973e31985(1)" alt="Item" class="order-item-image">
+                        </div>
+                        
+                        <div class="order-footer">
+                            <button class="btn btn-outline btn-sm" onclick="showOrderDetail()">
+                                View Details
+                            </button>
+                            <div class="order-total">$45.50</div>
+                        </div>
+                    </div>
+                    
+                    <div class="order-card">
+                        <div class="order-header">
+                            <div>
+                                <div class="order-id">Order #RW-2023-0432</div>
+                                <div class="order-date">Placed on August 5, 2023</div>
+                            </div>
+                            <span class="badge badge-success">Delivered</span>
+                        </div>
+                        
+                        <div class="order-items">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1523381210434-271e8be1f52b(1)" alt="Item" class="order-item-image">
+                            <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1515372039744-b8f02a3ae446(1)" alt="Item" class="order-item-image">
+                        </div>
+                        
+                        <div class="order-footer">
+                            <button class="btn btn-outline btn-sm" onclick="showOrderDetail()">
+                                View Details
+                            </button>
+                            <div class="order-total">$78.25</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Order Detail Page -->
+    <main id="orderDetail" class="page">
+        <section class="section">
+            <div class="container">
+                <button class="btn btn-outline mb-4" onclick="showPage(&#39;orders&#39;)">
+                    <i class="fas fa-arrow-left"></i> Back to Orders
+                </button>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <div class="order-header mb-4">
+                            <div>
+                                <h2>Order #RW-2023-0876</h2>
+                                <div class="order-date">Placed on October 15, 2023 • Delivered on October 20, 2023</div>
+                            </div>
+                            <span class="badge badge-success">Delivered</span>
+                        </div>
+                        
+                        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 3rem;">
+                            <div>
+                                <h3 class="mb-3">Items</h3>
+                                <div class="cart-items">
+                                    <div class="cart-item">
+                                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1534528741775-53994a69daeb" alt="Item" class="cart-item-image">
+                                        <div class="cart-item-details">
+                                            <h3 class="cart-item-title">Designer Wool Blend Coat</h3>
+                                            <div class="badge badge-success mb-2">Like New</div>
+                                            <div class="cart-item-price">$89.99</div>
+                                            <div>Quantity: 1</div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="cart-item">
+                                        <img src="./ReWear - Sustainable Fashion Marketplace_files/photo-1496747611176-843222e1e57c" alt="Item" class="cart-item-image">
+                                        <div class="cart-item-details">
+                                            <h3 class="cart-item-title">Organic Cotton T-Shirt</h3>
+                                            <div class="badge badge-success mb-2">Like New</div>
+                                            <div class="cart-item-price">$24.99</div>
+                                            <div>Quantity: 1</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h3 class="mb-3">Shipping Information</h3>
+                                    <p>John Doe<br>
+                                    123 Green Street<br>
+                                    Eco City, EC 12345<br>
+                                    United States<br>
+                                    Phone: +1 (555) 123-4567</p>
+                                </div>
+                            </div>
+                            
+                            <div class="cart-summary">
+                                <h3 class="mb-3">Order Summary</h3>
+                                <div class="summary-row">
+                                    <span>Subtotal (2 items)</span>
+                                    <span>$114.98</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Shipping</span>
+                                    <span>$4.99</span>
+                                </div>
+                                <div class="summary-row">
+                                    <span>Environmental Impact Fee</span>
+                                    <span>$2.00</span>
+                                </div>
+                                <div class="summary-row total">
+                                    <span>Total</span>
+                                    <span>$121.97</span>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <h3 class="mb-3">Environmental Impact</h3>
+                                    <p>This order saved approximately 5,400 liters of water and reduced CO₂ emissions by 12kg compared to buying new items.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Profile Page -->
+    <main id="profile" class="page">
+        <section class="section">
+            <div class="container">
+                <h1 class="mb-4">Your Profile</h1>
+                
+                <div class="profile-container">
+                    <div class="profile-sidebar">
+                        <div class="user-avatar" style="width: 80px; height: 80px; font-size: 1.5rem; margin: 0 auto 1.5rem;">JD</div>
+                        <h3 class="text-center mb-3">John Doe</h3>
+                        <ul class="profile-nav">
+                            <li class="profile-nav-item">
+                                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="profile-nav-link active" onclick="showProfileSection(&#39;info&#39;)">
+                                    <i class="fas fa-user"></i> Personal Info
+                                </a>
+                            </li>
+                            <li class="profile-nav-item">
+                                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="profile-nav-link" onclick="showProfileSection(&#39;orders&#39;)">
+                                    <i class="fas fa-shopping-bag"></i> My Orders
+                                </a>
+                            </li>
+                            <li class="profile-nav-item">
+                                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="profile-nav-link" onclick="showProfileSection(&#39;settings&#39;)">
+                                    <i class="fas fa-cog"></i> Settings
+                                </a>
+                            </li>
+                            <li class="profile-nav-item">
+                                <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" class="profile-nav-link" onclick="showProfileSection(&#39;impact&#39;)">
+                                    <i class="fas fa-leaf"></i> My Impact
+                                </a>
+                            </li>
+                        </ul>
+                        
+                        <button class="btn btn-outline btn-full mt-4" onclick="logout()">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </button>
+                    </div>
+                    
+                    <div class="profile-content">
+                        <div id="profileInfo" class="profile-section">
+                            <h2 class="mb-3">Personal Information</h2>
+                            <form id="profileForm">
+                                <div class="form-group">
+                                    <label class="form-label">Full Name</label>
+                                    <input type="text" class="form-control" value="John Doe">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Email Address</label>
+                                    <input type="email" class="form-control" value="john.doe@example.com">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Phone Number</label>
+                                    <input type="tel" class="form-control" value="+1 (555) 123-4567">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label class="form-label">Shipping Address</label>
+                                    <textarea class="form-control" rows="3">123 Green Street, Eco City, EC 12345</textarea>
+                                </div>
+                                
+                                <button type="button" class="btn btn-primary" onclick="updateProfile()">
+                                    Update Profile
+                                </button>
+                            </form>
+                        </div>
+                        
+                        <div id="profileOrders" class="profile-section hidden">
+                            <h2 class="mb-3">Order History</h2>
+                            <p>View and manage your recent orders.</p>
+                            <button class="btn btn-outline mt-2" onclick="showPage(&#39;orders&#39;)">
+                                View All Orders
+                            </button>
+                        </div>
+                        
+                        <div id="profileSettings" class="profile-section hidden">
+                            <h2 class="mb-3">Account Settings</h2>
+                            <p>Manage your notification preferences and account security.</p>
+                            <!-- Settings content would go here -->
+                        </div>
+                        
+                        <div id="profileImpact" class="profile-section hidden">
+                            <h2 class="mb-3">My Environmental Impact</h2>
+                            <p>Track your contribution to sustainability through ReWear.</p>
+                            <div class="card mt-3">
+                                <div class="card-body">
+                                    <h3 class="card-title">Your Impact Stats</h3>
+                                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 1rem;">
+                                        <div>
+                                            <h4 class="text-primary">8</h4>
+                                            <p>Items saved from landfills</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-primary">18,900L</h4>
+                                            <p>Water saved</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-primary">42kg</h4>
+                                            <p>CO₂ emissions reduced</p>
+                                        </div>
+                                        <div>
+                                            <h4 class="text-primary">3</h4>
+                                            <p>Orders placed</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- About Page -->
+    <main id="about" class="page">
+        <section class="section">
+            <div class="container">
+                <h1 class="mb-4">About ReWear</h1>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="mb-3">Our Mission</h2>
+                        <p class="mb-4">ReWear is on a mission to transform the fashion industry by promoting clothing reuse, reducing textile waste, and fostering ethical consumption. We believe in a circular economy where fashion is sustainable, accessible, and conscious.</p>
+                        
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 3rem;">
+                            <div>
+                                <h3 class="mb-3">The Problem</h3>
+                                <ul style="list-style: none; padding-left: 0;">
+                                    <li class="mb-2"><i class="fas fa-times-circle text-primary"></i> Fast fashion produces 10% of global carbon emissions</li>
+                                    <li class="mb-2"><i class="fas fa-times-circle text-primary"></i> 85% of textiles end up in landfills each year</li>
+                                    <li class="mb-2"><i class="fas fa-times-circle text-primary"></i> 2,700 liters of water needed for one cotton shirt</li>
+                                    <li class="mb-2"><i class="fas fa-times-circle text-primary"></i> Textile dyeing is the 2nd largest polluter of clean water</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="mb-3">Our Solution</h3>
+                                <ul style="list-style: none; padding-left: 0;">
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary"></i> Extend clothing lifespan through reuse</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary"></i> Curated marketplace for quality pre-loved fashion</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary"></i> Carbon-neutral shipping and eco-friendly packaging</li>
+                                    <li class="mb-2"><i class="fas fa-check-circle text-primary"></i> Transparent impact tracking for every purchase</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Impact Page -->
+    <main id="impact" class="page">
+        <section class="section">
+            <div class="container">
+                <h1 class="mb-4">Our Impact</h1>
+                
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="mb-3">Collective Environmental Impact</h2>
+                        <p>Together with our community, we're making a measurable difference in reducing fashion's environmental footprint.</p>
+                        
+                        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; margin-top: 2rem; text-align: center;">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                        <i class="fas fa-tshirt"></i>
+                                    </div>
+                                    <h3>1,240+</h3>
+                                    <p>Items Rescued</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                        <i class="fas fa-tint"></i>
+                                    </div>
+                                    <h3>15M Liters</h3>
+                                    <p>Water Saved</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                        <i class="fas fa-cloud"></i>
+                                    </div>
+                                    <h3>3.5 Tonnes</h3>
+                                    <p>CO₂ Reduced</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-body">
+                                    <div style="font-size: 2.5rem; color: var(--primary-500); margin-bottom: 1rem;">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                    <h3>2,800+</h3>
+                                    <p>Community Members</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h2 class="mb-3">How We Calculate Impact</h2>
+                        <p>Our impact calculations are based on industry-standard metrics for fashion sustainability:</p>
+                        
+                        <div class="mt-3">
+                            <h4 class="mb-2">Water Savings</h4>
+                            <p>Based on the Water Footprint Network data, producing 1kg of cotton requires approximately 10,000 liters of water. Each item saved from production prevents this water usage.</p>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h4 class="mb-2">Carbon Emissions</h4>
+                            <p>According to the UN Environment Programme, the fashion industry produces 10% of global carbon emissions. Extending a garment's life by 9 months reduces its carbon footprint by 30%.</p>
+                        </div>
+                        
+                        <div class="mt-3">
+                            <h4 class="mb-2">Waste Reduction</h4>
+                            <p>The Ellen MacArthur Foundation reports that less than 1% of material used to produce clothing is recycled into new clothing. By keeping items in circulation, we dramatically reduce textile waste.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div>
+                    <div class="footer-logo">
+                        <i class="fas fa-leaf"></i> ReWear
+                    </div>
+                    <p>Sustainable fashion marketplace promoting clothing reuse and reducing textile waste.</p>
+                    <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
+                        <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: white;"><i class="fab fa-facebook-f"></i></a>
+                        <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: white;"><i class="fab fa-instagram"></i></a>
+                        <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: white;"><i class="fab fa-twitter"></i></a>
+                        <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: white;"><i class="fab fa-pinterest"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="footer-heading">Shop</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" onclick="showPage(&#39;items&#39;)">All Items</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Women's Clothing</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Men's Clothing</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Accessories</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Shoes</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-heading">Company</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" onclick="showPage(&#39;about&#39;)">About Us</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" onclick="showPage(&#39;impact&#39;)">Our Impact</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">How It Works</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Careers</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Press</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="footer-heading">Support</h4>
+                    <ul class="footer-links">
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Help Center</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">FAQs</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Shipping Info</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Returns &amp; Exchanges</a></li>
+                        <li class="footer-link"><a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2023 ReWear. All rights reserved. | <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: var(--primary-300);">Privacy Policy</a> | <a href="file:///C:/Users/lenov/AppData/Local/Packages/5319275A.WhatsAppDesktop_cv1g1gvanyjgm/LocalState/sessions/5477D0A6D0AFFD95DCB21B6D5972F4604F12B99E/transfers/2026-02/rewear%20mock%20user%20website.html#" style="color: var(--primary-300);">Terms of Service</a></p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Order Confirmed!</h3>
+                <button class="modal-close" onclick="closeModal(&#39;successModal&#39;)">×</button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align: center; padding: 2rem 0;">
+                    <div style="font-size: 4rem; color: var(--primary-500); margin-bottom: 1.5rem;">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h3 class="mb-2">Thank You for Your Order!</h3>
+                    <p class="mb-3">Your order #RW-2023-0987 has been confirmed and will be shipped within 1-2 business days.</p>
+                    <p class="text-secondary">You'll receive a confirmation email with tracking information shortly.</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal(&#39;successModal&#39;)">Continue Shopping</button>
+                <button class="btn btn-primary" onclick="showPage(&#39;orders&#39;); closeModal(&#39;successModal&#39;)">View Orders</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Modal -->
+    <div class="modal-overlay" id="filterModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Filter Items</h3>
+                <button class="modal-close" onclick="closeModal(&#39;filterModal&#39;)">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">Category</label>
+                    <select class="form-control">
+                        <option>All Categories</option>
+                        <option>Women's Clothing</option>
+                        <option>Men's Clothing</option>
+                        <option>Accessories</option>
+                        <option>Shoes</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Condition</label>
+                    <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" checked="">
+                            <span>Like New</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox" checked="">
+                            <span>Good</span>
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 0.5rem;">
+                            <input type="checkbox">
+                            <span>Fair</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Price Range</label>
+                    <div style="display: flex; align-items: center; gap: 1rem;">
+                        <input type="number" class="form-control" placeholder="Min" value="0">
+                        <span>to</span>
+                        <input type="number" class="form-control" placeholder="Max" value="200">
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">Size</label>
+                    <select class="form-control">
+                        <option>All Sizes</option>
+                        <option>XS</option>
+                        <option>S</option>
+                        <option>M</option>
+                        <option>L</option>
+                        <option>XL</option>
+                    </select>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closeModal(&#39;filterModal&#39;)">Cancel</button>
+                <button class="btn btn-primary" onclick="applyFilters(); closeModal(&#39;filterModal&#39;)">Apply Filters</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data for items
+        const itemsData = [
+            {
+                id: 1,
+                title: "Designer Wool Blend Coat",
+                price: 89.99,
+                condition: "Like New",
+                category: "Women's Outerwear",
+                image: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 2,
+                title: "Organic Cotton T-Shirt",
+                price: 24.99,
+                condition: "Like New",
+                category: "Women's Tops",
+                image: "https://images.unsplash.com/photo-1496747611176-843222e1e57c?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 3,
+                title: "Denim Jacket",
+                price: 45.50,
+                condition: "Good",
+                category: "Men's Outerwear",
+                image: "https://images.unsplash.com/photo-1544441893-675973e31985?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 4,
+                title: "Linen Button-Down Shirt",
+                price: 32.75,
+                condition: "Like New",
+                category: "Men's Shirts",
+                image: "https://images.unsplash.com/photo-1523381210434-271e8be1f52b?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 5,
+                title: "Sustainable Sneakers",
+                price: 65.00,
+                condition: "Good",
+                category: "Shoes",
+                image: "https://images.unsplash.com/photo-1515347619252-60a4bf4fff4f?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 6,
+                title: "Knit Sweater",
+                price: 38.99,
+                condition: "Fair",
+                category: "Women's Sweaters",
+                image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 7,
+                title: "Vintage Leather Bag",
+                price: 75.25,
+                condition: "Good",
+                category: "Accessories",
+                image: "https://images.unsplash.com/photo-1584917865442-de89df76afd3?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            },
+            {
+                id: 8,
+                title: "Wide-Leg Trousers",
+                price: 42.00,
+                condition: "Like New",
+                category: "Women's Pants",
+                image: "https://images.unsplash.com/photo-1544441893-675973e31985?ixlib=rb-1.2.1&auto=format&fit=crop&w=400&q=80"
+            }
+        ];
+
+        // Cart state
+        let cartItems = [
+            { id: 1, title: "Designer Wool Blend Coat", price: 89.99, condition: "Like New", quantity: 1 },
+            { id: 2, title: "Organic Cotton T-Shirt", price: 24.99, condition: "Like New", quantity: 2 },
+            { id: 3, title: "Denim Jacket", price: 45.50, condition: "Good", quantity: 1 }
+        ];
+
+        // Page navigation
+        function showPage(pageId) {
+            // Hide all pages
+            document.querySelectorAll('.page').forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            document.getElementById(pageId).classList.add('active');
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            if (pageId === 'home') {
+                document.querySelectorAll('.nav-link')[0].classList.add('active');
+            } else if (pageId === 'items') {
+                document.querySelectorAll('.nav-link')[1].classList.add('active');
+            }
+            
+            // Update cart count
+            updateCartCount();
+            
+            // Load items if needed
+            if (pageId === 'items' || pageId === 'home') {
+                loadItems();
+            }
+        }
+
+        // Load items into grid
+        function loadItems() {
+            const featuredContainer = document.getElementById('featuredItems');
+            const allItemsContainer = document.getElementById('allItems');
+            
+            if (featuredContainer) {
+                featuredContainer.innerHTML = itemsData.slice(0, 4).map(item => `
+                    <div class="card">
+                        <img src="${item.image}" alt="${item.title}" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">${item.title}</h3>
+                            <div class="badge ${item.condition === 'Like New' ? 'badge-success' : item.condition === 'Good' ? 'badge-warning' : 'badge-neutral'} mb-2">${item.condition}</div>
+                            <p class="card-text">${item.category}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$${item.price.toFixed(2)}</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(${item.id})">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            if (allItemsContainer) {
+                allItemsContainer.innerHTML = itemsData.map(item => `
+                    <div class="card">
+                        <img src="${item.image}" alt="${item.title}" class="card-image">
+                        <div class="card-body">
+                            <h3 class="card-title">${item.title}</h3>
+                            <div class="badge ${item.condition === 'Like New' ? 'badge-success' : item.condition === 'Good' ? 'badge-warning' : 'badge-neutral'} mb-2">${item.condition}</div>
+                            <p class="card-text">${item.category}</p>
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div class="card-title" style="font-size: 1.5rem; color: var(--primary-700);">$${item.price.toFixed(2)}</div>
+                                <button class="btn btn-primary" onclick="addToCartFromItem(${item.id})">
+                                    <i class="fas fa-shopping-cart"></i> Add to Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        // Cart functions
+        function addToCartFromItem(itemId) {
+            const item = itemsData.find(i => i.id === itemId);
+            if (item) {
+                // Check if item already in cart
+                const existingItem = cartItems.find(i => i.id === itemId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cartItems.push({ ...item, quantity: 1 });
+                }
+                
+                // Show notification
+                showNotification(`${item.title} added to cart!`);
+                
+                // Update cart count
+                updateCartCount();
+            }
+        }
+
+        function addToCart() {
+            // This would normally add the current item being viewed
+            showNotification("Item added to cart!");
+            updateCartCount();
+        }
+
+        function updateQuantity(button, change) {
+            const quantityDisplay = button.parentElement.querySelector('.quantity-display');
+            let quantity = parseInt(quantityDisplay.textContent);
+            quantity += change;
+            
+            if (quantity < 1) quantity = 1;
+            
+            quantityDisplay.textContent = quantity;
+            
+            // Update cart total
+            updateCartTotal();
+        }
+
+        function removeCartItem(button) {
+            const cartItem = button.closest('.cart-item');
+            cartItem.style.opacity = '0.5';
+            setTimeout(() => {
+                cartItem.remove();
+                updateCartTotal();
+                updateCartCount();
+            }, 300);
+        }
+
+        function updateCartTotal() {
+            // This would recalculate the cart total
+            // In a real app, this would update based on actual cart data
+        }
+
+        function updateCartCount() {
+            const totalItems = cartItems.reduce((total, item) => total + item.quantity, 0);
+            document.getElementById('cartCount').textContent = totalItems;
+        }
+
+        // Modal functions
+        function showFilterModal() {
+            document.getElementById('filterModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        function applyFilters() {
+            showNotification("Filters applied!");
+        }
+
+        function placeOrder() {
+            // Show success modal
+            document.getElementById('successModal').style.display = 'flex';
+            
+            // Clear cart
+            cartItems = [];
+            updateCartCount();
+        }
+
+        function showOrderDetail() {
+            showPage('orderDetail');
+        }
+
+        // Profile functions
+        function showProfileSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.profile-section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById('profile' + sectionId.charAt(0).toUpperCase() + sectionId.slice(1)).classList.remove('hidden');
+            
+            // Update active nav link
+            document.querySelectorAll('.profile-nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+        }
+
+        function updateProfile() {
+            showNotification("Profile updated successfully!");
+        }
+
+        function logout() {
+            showNotification("You have been logged out.");
+            setTimeout(() => {
+                showPage('home');
+            }, 1000);
+        }
+
+        // Notification function
+        function showNotification(message) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.style.cssText = `
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background-color: var(--primary-600);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: var(--radius);
+                box-shadow: var(--shadow-lg);
+                z-index: 1000;
+                display: flex;
+                align-items: center;
+                gap: 0.75rem;
+                animation: slideIn 0.3s ease;
+            `;
+            
+            notification.innerHTML = `
+                <i class="fas fa-check-circle"></i>
+                <span>${message}</span>
+            `;
+            
+            document.body.appendChild(notification);
+            
+            // Remove after 3 seconds
+            setTimeout(() => {
+                notification.style.animation = 'slideOut 0.3s ease';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        // Add CSS for notifications
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        // Initialize the page
+        document.addEventListener('DOMContentLoaded', function() {
+            loadItems();
+            updateCartCount();
+            
+            // Set up modal close on overlay click
+            document.querySelectorAll('.modal-overlay').forEach(modal => {
+                modal.addEventListener('click', function(e) {
+                    if (e.target === this) {
+                        this.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
+
+</body></html>
