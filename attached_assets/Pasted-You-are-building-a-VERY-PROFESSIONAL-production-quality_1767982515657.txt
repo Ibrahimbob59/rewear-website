@@ -1,0 +1,218 @@
+You are building a VERY PROFESSIONAL, production-quality USER WEBSITE
+for a graduation project called “ReWear”.
+
+Project Theme:
+ReWear is a SUSTAINABLE FASHION marketplace focused on:
+- clothing reuse
+- reducing textile waste
+- ethical consumption
+- circular economy
+- clean, minimal, eco-friendly design
+
+This is NOT an admin panel.
+This is a customer-facing marketplace website suitable for a graduation defense.
+
+────────────────────────────────────────
+🎨 UI / UX DESIGN REQUIREMENTS
+────────────────────────────────────────
+The UI must look:
+- modern
+- minimal
+- premium
+- eco-friendly
+- calm and trustworthy
+
+Design inspiration:
+- Sustainable brands
+- Modern e-commerce (Patagonia / Vinted / Etsy / Zara minimal style)
+
+Color palette:
+- Primary: Deep green / forest green
+- Secondary: Beige / off-white
+- Accent: Soft brown
+- Text: Dark gray / charcoal
+
+Typography:
+- Modern font (Inter / Poppins)
+- Clear hierarchy
+- Good spacing & white space
+
+Layout:
+- FULLY RESPONSIVE (mobile, tablet, desktop)
+- Professional grid system
+- Clean cards, soft shadows, rounded corners
+- Subtle hover effects
+- Loading skeletons
+
+NO flashy animations or bright colors.
+
+────────────────────────────────────────
+🧠 UX RULES
+────────────────────────────────────────
+PUBLIC MARKETPLACE:
+- Anyone can browse items and view item details without login.
+
+LOGIN REQUIRED FOR ANY ACTION:
+- Add to cart
+- Checkout / place order
+- Sell item
+- Donate item
+- Add/remove favorites
+- View orders
+- Apply as driver
+- Access profile or listings
+
+If user is not logged in and tries an action:
+- Show modal or toast: “Please log in to continue”
+- Redirect to /login
+- After login, redirect back to intended page
+
+────────────────────────────────────────
+🛠 TECH STACK
+────────────────────────────────────────
+- React + Vite
+- TailwindCSS
+- React Router
+- Axios
+
+Code quality:
+- Clean folder structure
+- Reusable components
+- Centralized API service
+- Easy to extend
+
+────────────────────────────────────────
+🔌 BACKEND INTEGRATION (IMPORTANT)
+────────────────────────────────────────
+Backend: Laravel REST API (runs locally)
+
+DO NOT hardcode URLs.
+Use environment variable only:
+VITE_API_BASE_URL
+
+Create:
+- .env.example with:
+  VITE_API_BASE_URL=http://127.0.0.1:8000
+
+All API calls must go through:
+- src/services/axiosClient.js
+- src/services/api.js
+
+JWT Authentication:
+- Store token in localStorage
+- Axios interceptor adds:
+  Authorization: Bearer <token>
+
+────────────────────────────────────────
+🎯 WEBSITE FEATURES
+────────────────────────────────────────
+A) Public browsing
+- Browse items
+- Search, filter, sort
+- View item details
+- Donation items must NOT appear
+- Only items with status = "available"
+
+B) Buying flow (login required)
+- Add to cart (cart in localStorage)
+- Checkout
+- Create order
+- View orders & order details
+
+C) Selling / Donating (login required)
+- Create item listing
+- Toggle donate or sell
+- Manage “My Listings”
+- Edit / delete own items
+
+D) Favorites (login required)
+- Add to favorites
+- Remove favorites
+- Favorites page
+
+E) Driver application (login required)
+- Apply as driver via form
+
+────────────────────────────────────────
+📄 REQUIRED ROUTES
+────────────────────────────────────────
+Public:
+- /                 → Items list
+- /items/:id         → Item details
+- /login
+- /register
+
+Protected:
+- /cart
+- /checkout
+- /orders
+- /orders/:id
+- /profile
+- /sell
+- /my-listings
+- /favorites
+- /apply-driver
+
+────────────────────────────────────────
+📦 API ENDPOINTS (MATCH BACKEND EXACTLY)
+────────────────────────────────────────
+AUTH:
+POST /api/auth/register
+POST /api/auth/login
+POST /api/auth/logout
+GET  /api/auth/me
+POST /api/auth/verify-otp
+POST /api/auth/refresh
+
+ITEMS:
+GET  /api/items
+GET  /api/items/:id
+POST /api/items
+PUT  /api/items/:id
+DELETE /api/items/:id
+GET  /api/my-items
+
+CATEGORIES:
+GET /api/categories
+
+ORDERS:
+POST /api/orders
+GET  /api/orders
+GET  /api/orders/:id
+
+FAVORITES:
+POST   /api/favorites
+GET    /api/favorites
+DELETE /api/favorites/:id
+
+DRIVER:
+POST /api/driver/apply
+
+PROFILE:
+PUT /api/users/me
+
+────────────────────────────────────────
+🧩 STATE MANAGEMENT
+────────────────────────────────────────
+- AuthContext (user, token)
+- CartContext (localStorage)
+- FavoritesContext (backend-based)
+- ProtectedRoute
+- RequireAuthAction helper
+
+────────────────────────────────────────
+📦 DELIVERABLES
+────────────────────────────────────────
+- Full React project
+- Professional, responsive UI
+- Clean architecture
+- .env.example
+- README.md with:
+  npm install
+  npm run dev
+
+Mention backend run:
+php artisan serve --host=127.0.0.1 --port=8000
+
+This is a FINAL graduation project.
+Make it look like a REAL startup product.
