@@ -1,6 +1,14 @@
 import { useRoute } from 'wouter';
 import { useQuery } from '@tanstack/react-query';
-import { Heart, ShoppingBag, Share2, ChevronLeft, User, MapPin, Calendar } from 'lucide-react';
+import {
+  Heart,
+  ShoppingBag,
+  Share2,
+  ChevronLeft,
+  User,
+  MapPin,
+  Calendar,
+} from 'lucide-react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,7 +16,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { useToast } from '@/hooks/use-toast';
-import api, { type Item } from '@/services/api';
+import api, { type Item, type ItemImage } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
@@ -18,10 +26,11 @@ import { cn } from '@/lib/utils';
 export default function ItemDetails() {
   const [, params] = useRoute('/items/:id');
   const itemId = params?.id ? parseInt(params.id) : 0;
+
   const { toast } = useToast();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth(); // kept even if unused
   const { addToCart } = useCart();
-  const { isFavorite, getFavoriteId, addFavorite, removeFavorite } = useFavorites();
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites(); // ✅ removed getFavoriteId
   const { requireAuth } = useRequireAuth();
 
   const { data: itemData, isLoading } = useQuery({
@@ -51,6 +60,19 @@ export default function ItemDetails() {
     });
   };
 
+  const getImageUrl = (img: string | ItemImage | undefined | null): string | null => {
+    if (!img) return null;
+    if (typeof img === 'string') return img;
+    return img.url || null;
+  };
+
+  const mainImageUrl =
+    item?.primary_image ||
+    item?.image ||
+    (Array.isArray(item?.images) && item!.images!.length > 0
+      ? getImageUrl(item!.images![0] as any)
+      : null);
+
   const handleAddToCart = () => {
     if (!item) return;
     requireAuth(() => {
@@ -62,13 +84,14 @@ export default function ItemDetails() {
     }, `/items/${item.id}`);
   };
 
+  // ✅ Correct favorite toggle using item.id (backend DELETE /favorites/{itemId})
   const handleFavorite = async () => {
     if (!item) return;
+
     requireAuth(async () => {
       try {
         if (isFav) {
-          const favId = getFavoriteId(item.id);
-          if (favId) await removeFavorite(favId);
+          await removeFavorite(item.id);
           toast({ title: 'Removed from favorites' });
         } else {
           await addFavorite(item.id);
@@ -93,6 +116,7 @@ export default function ItemDetails() {
           url: window.location.href,
         });
       } catch {
+        // ignore
       }
     } else {
       await navigator.clipboard.writeText(window.location.href);
@@ -130,6 +154,11 @@ export default function ItemDetails() {
     );
   }
 
+  const thumbnailUrls =
+    Array.isArray(item.images) && item.images.length > 0
+      ? item.images.map((img) => getImageUrl(img as any)).filter((u): u is string => !!u)
+      : [];
+
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
       <Link href="/">
@@ -142,31 +171,39 @@ export default function ItemDetails() {
       <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="space-y-4">
           <div className="relative aspect-square rounded-lg overflow-hidden bg-muted">
-            {item.image ? (
+            {mainImageUrl ? (
               <img
-                src={item.image}
+                src={mainImageUrl}
                 alt={item.title}
                 className="h-full w-full object-cover"
+                loading="lazy"
               />
             ) : (
               <div className="flex items-center justify-center h-full">
                 <span className="text-muted-foreground">No image available</span>
               </div>
             )}
+
             {item.is_donation && (
               <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">
                 Donation
               </Badge>
             )}
           </div>
-          {item.images && item.images.length > 1 && (
+
+          {thumbnailUrls.length > 1 && (
             <div className="grid grid-cols-4 gap-2">
-              {item.images.slice(0, 4).map((img, index) => (
+              {thumbnailUrls.slice(0, 4).map((url, index) => (
                 <div
-                  key={index}
+                  key={url + index}
                   className="aspect-square rounded-md overflow-hidden bg-muted cursor-pointer hover:opacity-80 transition-opacity"
                 >
-                  <img src={img} alt={`${item.title} ${index + 1}`} className="h-full w-full object-cover" />
+                  <img
+                    src={url}
+                    alt={`${item.title} ${index + 1}`}
+                    className="h-full w-full object-cover"
+                    loading="lazy"
+                  />
                 </div>
               ))}
             </div>
@@ -179,6 +216,7 @@ export default function ItemDetails() {
               <h1 className="text-2xl md:text-3xl font-bold" data-testid="text-item-title">
                 {item.title}
               </h1>
+
               <div className="flex gap-2">
                 <Button
                   variant="outline"
@@ -188,11 +226,13 @@ export default function ItemDetails() {
                 >
                   <Heart className={cn('h-5 w-5', isFav && 'fill-destructive text-destructive')} />
                 </Button>
+
                 <Button variant="outline" size="icon" onClick={handleShare} data-testid="button-share">
                   <Share2 className="h-5 w-5" />
                 </Button>
               </div>
             </div>
+
             {item.category && (
               <Badge variant="secondary" className="mb-4">
                 {item.category.name}
@@ -202,11 +242,9 @@ export default function ItemDetails() {
 
           <div className="flex items-baseline gap-2">
             <span className="text-3xl font-bold text-primary" data-testid="text-item-price">
-              {item.is_donation ? 'Free' : formatPrice(item.price)}
+              {item.is_donation ? 'Free' : formatPrice(Number(item.price))}
             </span>
-            {item.is_donation && (
-              <span className="text-sm text-muted-foreground">(Donation item)</span>
-            )}
+            {item.is_donation && <span className="text-sm text-muted-foreground">(Donation item)</span>}
           </div>
 
           <div className="space-y-4">
@@ -217,12 +255,14 @@ export default function ItemDetails() {
                   <Badge variant="outline">{item.condition}</Badge>
                 </div>
               )}
+
               {item.size && (
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">Size:</span>
                   <Badge variant="outline">{item.size}</Badge>
                 </div>
               )}
+
               {item.brand && (
                 <div className="flex items-center gap-2">
                   <span className="text-muted-foreground">Brand:</span>
@@ -240,47 +280,39 @@ export default function ItemDetails() {
           </div>
 
           <div className="flex gap-3 pt-4">
-            <Button
-              size="lg"
-              className="flex-1"
-              onClick={handleAddToCart}
-              disabled={item.status !== 'available'}
-              data-testid="button-add-to-cart"
-            >
+            <Button size="lg" className="flex-1" onClick={handleAddToCart} disabled={item.status !== 'available'}>
               <ShoppingBag className="h-5 w-5 mr-2" />
-              {item.status === 'available' ? 'Add to Cart' : 'Not Available'}
+              Add to Cart
             </Button>
           </div>
 
-          {item.user && (
-            <Card>
-              <CardContent className="p-4">
-                <div className="flex items-center gap-4">
-                  <Avatar className="h-12 w-12">
-                    <AvatarImage src={item.user.avatar} />
-                    <AvatarFallback>
-                      <User className="h-6 w-6" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <p className="font-medium">{item.user.name}</p>
-                    <p className="text-sm text-muted-foreground">Seller</p>
-                  </div>
+          <Card>
+            <CardContent className="pt-6 space-y-4">
+              <h3 className="font-semibold text-lg">Seller Information</h3>
+              <div className="flex items-center gap-4">
+                <Avatar>
+                  <AvatarImage src={item.seller?.avatar} />
+                  <AvatarFallback>
+                    <User className="h-4 w-4" />
+                  </AvatarFallback>
+                </Avatar>
+                <div>
+                  <p className="font-medium">{item.seller?.full_name || item.seller?.name || 'Seller'}</p>
+                  {item.seller?.address && (
+                    <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                      <MapPin className="h-4 w-4" />
+                      {item.seller.address}
+                    </div>
+                  )}
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              </div>
 
-          <div className="flex items-center gap-4 text-sm text-muted-foreground pt-4 border-t">
-            <div className="flex items-center gap-1">
-              <Calendar className="h-4 w-4" />
-              <span>Listed {formatDate(item.created_at)}</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <MapPin className="h-4 w-4" />
-              <span>Local pickup available</span>
-            </div>
-          </div>
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <Calendar className="h-4 w-4" />
+                Listed on {formatDate(item.created_at)}
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

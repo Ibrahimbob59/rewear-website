@@ -1,13 +1,19 @@
-import { createContext, useContext, useState, useEffect, useCallback, type ReactNode } from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  type ReactNode,
+} from 'react';
 import api, { type Favorite } from '@/services/api';
 
 interface FavoritesContextType {
   favorites: Favorite[];
   isLoading: boolean;
   addFavorite: (itemId: number) => Promise<void>;
-  removeFavorite: (favoriteId: number) => Promise<void>;
+  removeFavorite: (itemId: number) => Promise<void>; // ✅ itemId
   isFavorite: (itemId: number) => boolean;
-  getFavoriteId: (itemId: number) => number | null;
   refreshFavorites: () => Promise<void>;
 }
 
@@ -27,10 +33,11 @@ export function FavoritesProvider({ children, isAuthenticated }: FavoritesProvid
       setFavorites([]);
       return;
     }
+
     setIsLoading(true);
     try {
       const response = await api.favorites.getAll();
-      setFavorites(response.data.data || response.data || []);
+      setFavorites(response.data?.data ?? response.data ?? []);
     } catch {
       setFavorites([]);
     } finally {
@@ -44,23 +51,23 @@ export function FavoritesProvider({ children, isAuthenticated }: FavoritesProvid
 
   const addFavorite = async (itemId: number) => {
     const response = await api.favorites.add(itemId);
-    const newFavorite = response.data.data || response.data;
-    setFavorites((current) => [...current, newFavorite]);
+    const newFavorite = response.data?.data ?? response.data;
+
+    setFavorites((current) => {
+      // prevent duplicates
+      if (current.some((f) => f.item_id === itemId)) return current;
+      return [...current, newFavorite];
+    });
   };
 
-  const removeFavorite = async (favoriteId: number) => {
-    await api.favorites.remove(favoriteId);
-    setFavorites((current) => current.filter((f) => f.id !== favoriteId));
+  // ✅ Backend DELETE expects itemId in path
+  const removeFavorite = async (itemId: number) => {
+    await api.favorites.remove(itemId);
+
+    setFavorites((current) => current.filter((f) => f.item_id !== itemId));
   };
 
-  const isFavorite = (itemId: number) => {
-    return favorites.some((f) => f.item_id === itemId);
-  };
-
-  const getFavoriteId = (itemId: number) => {
-    const favorite = favorites.find((f) => f.item_id === itemId);
-    return favorite ? favorite.id : null;
-  };
+  const isFavorite = (itemId: number) => favorites.some((f) => f.item_id === itemId);
 
   return (
     <FavoritesContext.Provider
@@ -70,7 +77,6 @@ export function FavoritesProvider({ children, isAuthenticated }: FavoritesProvid
         addFavorite,
         removeFavorite,
         isFavorite,
-        getFavoriteId,
         refreshFavorites,
       }}
     >
@@ -81,8 +87,6 @@ export function FavoritesProvider({ children, isAuthenticated }: FavoritesProvid
 
 export function useFavorites() {
   const context = useContext(FavoritesContext);
-  if (context === undefined) {
-    throw new Error('useFavorites must be used within a FavoritesProvider');
-  }
+  if (!context) throw new Error('useFavorites must be used within a FavoritesProvider');
   return context;
 }

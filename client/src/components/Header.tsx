@@ -25,7 +25,7 @@ import {
 
 const navLinks = [
   { href: '/', label: 'Home' },
-  { href: '/?view=shop', label: 'Shop' },
+ 
 ];
 
 export function Header() {

@@ -50,11 +50,7 @@ export function Footer() {
           <div className="space-y-4">
             <h4 className="font-semibold">Quick Links</h4>
             <ul className="space-y-2 text-sm">
-              <li>
-                <Link href="/" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Shop All
-                </Link>
-              </li>
+              
               <li>
                 <Link href="/sell" className="text-muted-foreground hover:text-foreground transition-colors">
                   Sell Your Items

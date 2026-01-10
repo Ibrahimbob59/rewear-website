@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Search, Filter, Leaf, Recycle, Heart, Truck, X, ChevronDown } from 'lucide-react';
 import { Input } from '@/components/ui/input';
@@ -36,6 +36,20 @@ export default function Home() {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
+  // ✅ helper: scroll to #shop section
+  const scrollToShop = () => {
+    const el = document.getElementById('shop');
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  // ✅ If user comes from navbar/footer link "/#shop"
+  useEffect(() => {
+    if (window.location.hash === '#shop') {
+      // wait a tick to ensure DOM is ready
+      setTimeout(() => scrollToShop(), 50);
+    }
+  }, []);
+
   const { data: itemsData, isLoading: isLoadingItems } = useQuery({
     queryKey: ['/api/items', filters],
     queryFn: async () => {
@@ -59,9 +73,7 @@ export default function Home() {
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
+    if (e.key === 'Enter') handleSearch();
   };
 
   const clearFilters = () => {
@@ -164,10 +176,11 @@ export default function Home() {
       <section className="relative h-[500px] md:h-[600px] overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/30" />
         <div
-          className="absolute inset-0 bg-cover bg-center"
+          className="absolute inset-0"
           style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1489987707025-afc232f7ea0f?w=1920&q=80')`,
-            zIndex: -1,
+          backgroundImage: `url('/rewear-website-background.png')`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
           }}
         />
         <div className="relative h-full container mx-auto px-4 md:px-6 lg:px-8 flex flex-col justify-center">
@@ -183,9 +196,16 @@ export default function Home() {
               to reduce textile waste and embrace ethical consumption.
             </p>
             <div className="flex flex-wrap gap-3">
-              <Button size="lg" className="bg-white text-primary hover:bg-white/90" data-testid="button-hero-shop">
+              {/* ✅ NOW it scrolls down */}
+              <Button
+                size="lg"
+                className="bg-white text-primary hover:bg-white/90"
+                data-testid="button-hero-shop"
+                onClick={scrollToShop}
+              >
                 Shop Now
               </Button>
+
               <Link href="/sell">
                 <Button
                   size="lg"
@@ -244,6 +264,7 @@ export default function Home() {
         </div>
       </section>
 
+      {/* ✅ This is your shop section (already existed) */}
       <section className="py-12 md:py-16" id="shop">
         <div className="container mx-auto px-4 md:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row gap-8">
@@ -281,6 +302,7 @@ export default function Home() {
                       <SelectItem value="price_high">Price: High to Low</SelectItem>
                     </SelectContent>
                   </Select>
+
                   <Sheet open={isFilterOpen} onOpenChange={setIsFilterOpen}>
                     <SheetTrigger asChild className="lg:hidden">
                       <Button variant="outline" data-testid="button-filters-mobile">

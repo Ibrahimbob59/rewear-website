@@ -18,23 +18,52 @@ export interface Category {
   slug: string;
 }
 
+/**
+ * ✅ Backend returns:
+ * images: [{ id, url, display_order, is_primary }]
+ * primary_image: "https://..."
+ */
+export interface ItemImage {
+  id: number;
+  url: string;
+  display_order?: number;
+  is_primary?: boolean;
+}
+
 export interface Item {
   id: number;
   title: string;
   description: string;
+
+  // backend sometimes returns price as string, sometimes as number
   price: number;
-  image: string;
-  images?: string[];
+
+  /**
+   * OLD (website was using this, but backend doesn't send it in your response)
+   * Keep it optional for compatibility with old UI.
+   */
+  image?: string | null;
+
+  /**
+   * ✅ NEW (matches your API response)
+   */
+  images?: Array<string | ItemImage>;
+  primary_image?: string | null;
+
   category_id: number;
   category?: Category;
+
   user_id: number;
   user?: User;
   seller?: User;
+
   status: 'available' | 'sold' | 'pending';
   condition: string;
   size?: string;
   brand?: string;
+
   is_donation: boolean;
+
   created_at: string;
   updated_at: string;
 }
@@ -124,16 +153,6 @@ export interface ItemFilters {
   size?: string;
   sort?: string;
   status?: string;
-}
-
-export interface DriverApplicationData {
-  vehicle_type: string;
-  license_number: string;
-  vehicle_plate: string;
-  experience_years: number;
-  coverage_areas: string[];
-  phone: string;
-  notes?: string;
 }
 
 const api = {
@@ -279,8 +298,11 @@ const api = {
   },
 
   driverApplications: {
-    apply: (data: DriverApplicationData) =>
-      axiosClient.post('/api/driver-applications', data),
+    // ✅ FIX: accept FormData (multipart/form-data)
+    apply: (data: FormData) =>
+      axiosClient.post('/api/driver-applications', data, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      }),
 
     getMyApplication: () =>
       axiosClient.get('/api/driver-applications/my-application'),

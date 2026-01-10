@@ -3,8 +3,7 @@ import axios from 'axios';
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || 'http://127.0.0.1:8000',
   headers: {
-    'Content-Type': 'application/json',
-    'Accept': 'application/json',
+    Accept: 'application/json',
   },
 });
 
@@ -15,12 +14,9 @@ let failedQueue: Array<{
 }> = [];
 
 const processQueue = (error: unknown, token: string | null = null) => {
-  failedQueue.forEach(prom => {
-    if (error) {
-      prom.reject(error);
-    } else if (token) {
-      prom.resolve(token);
-    }
+  failedQueue.forEach((prom) => {
+    if (error) prom.reject(error);
+    else if (token) prom.resolve(token);
   });
   failedQueue = [];
 };
@@ -37,11 +33,19 @@ axiosClient.interceptors.request.use(
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
+
+    // ✅ If sending FormData, do NOT force JSON content-type
+    if (config.data instanceof FormData) {
+      // Let the browser/axios set the boundary automatically
+      delete (config.headers as any)['Content-Type'];
+    } else {
+      // For normal JSON requests, set JSON content type
+      (config.headers as any)['Content-Type'] = 'application/json';
+    }
+
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
 axiosClient.interceptors.response.use(
@@ -53,12 +57,12 @@ axiosClient.interceptors.response.use(
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
-        }).then(token => {
-          originalRequest.headers.Authorization = `Bearer ${token}`;
-          return axiosClient(originalRequest);
-        }).catch(err => {
-          return Promise.reject(err);
-        });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return axiosClient(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
       }
 
       originalRequest._retry = true;
@@ -82,7 +86,7 @@ axiosClient.interceptors.response.use(
         const responseData = response.data?.data || response.data;
         const newAccessToken = responseData?.access_token;
         const newRefreshToken = responseData?.refresh_token;
-        
+
         if (!newAccessToken) {
           throw new Error('No access token in refresh response');
         }
