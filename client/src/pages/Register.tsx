@@ -24,12 +24,14 @@ const emailSchema = z.object({
 
 const registerSchema = z
   .object({
-    full_name: z.string().min(2, 'Name must be at least 2 characters'),
+    // ✅ API expects "name"
+    name: z.string().min(2, 'Name must be at least 2 characters'),
     email: z.string().email('Please enter a valid email'),
     phone: z.string().min(8, 'Please enter a valid phone number'),
     password: z.string().min(6, 'Password must be at least 6 characters'),
     password_confirmation: z.string(),
-    verification_code: z.string().min(6, 'Please enter the 6-digit code'),
+    // ✅ API expects "code"
+    code: z.string().min(6, 'Please enter the 6-digit code'),
   })
   .refine((data) => data.password === data.password_confirmation, {
     message: "Passwords don't match",
@@ -46,6 +48,8 @@ export default function Register() {
   const [userEmail, setUserEmail] = useState('');
   const [, setLocation] = useLocation();
   const { toast } = useToast();
+
+  // from AuthContext
   const { requestRegistrationCode, register } = useAuth();
 
   const emailForm = useForm<EmailForm>({
@@ -56,12 +60,12 @@ export default function Register() {
   const registerForm = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      full_name: '',
+      name: '',
       email: '',
       phone: '',
       password: '',
       password_confirmation: '',
-      verification_code: '',
+      code: '',
     },
   });
 
@@ -69,8 +73,12 @@ export default function Register() {
     setIsLoading(true);
     try {
       await requestRegistrationCode(data.email);
+
       setUserEmail(data.email);
+
+      // keep email in form for step 2
       registerForm.setValue('email', data.email);
+
       setStep('verify');
       toast({
         title: 'Verification Code Sent',
@@ -87,27 +95,36 @@ export default function Register() {
       setIsLoading(false);
     }
   };
+const onRegister = async (data: RegisterForm) => {
+  setIsLoading(true);
+  try {
+    await register({
+      full_name: data.name,
+      email: data.email,
+      phone: data.phone,
+      password: data.password,
+      password_confirmation: data.password_confirmation,
+      verification_code: data.code,
+    });
 
-  const onRegister = async (data: RegisterForm) => {
-    setIsLoading(true);
-    try {
-      await register(data);
-      toast({
-        title: 'Account Created!',
-        description: 'Welcome to ReWear. You can now start shopping.',
-      });
-      setLocation('/');
-    } catch (error: any) {
-      const message = error.response?.data?.message || 'Registration failed. Please try again.';
-      toast({
-        title: 'Registration Failed',
-        description: message,
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    toast({
+      title: 'Account Created!',
+      description: 'Welcome to ReWear. You can now start shopping.',
+    });
+    setLocation('/');
+  } catch (error: any) {
+    const message = error.response?.data?.message || 'Registration failed. Please try again.';
+    toast({
+      title: 'Registration Failed',
+      description: message,
+      variant: 'destructive',
+    });
+  } finally {
+    setIsLoading(false);
+  }
+};
+
+
 
   const handleResendCode = async () => {
     setIsLoading(true);
@@ -180,6 +197,7 @@ export default function Register() {
                 </Button>
               </form>
             </Form>
+
             <div className="mt-6 text-center text-sm">
               <span className="text-muted-foreground">Already have an account? </span>
               <Link href="/login" className="text-primary font-medium hover:underline" data-testid="link-login">
@@ -204,11 +222,10 @@ export default function Register() {
           </div>
           <div>
             <CardTitle className="text-2xl">Complete Registration</CardTitle>
-            <CardDescription>
-              We sent a verification code to {userEmail}
-            </CardDescription>
+            <CardDescription>We sent a verification code to {userEmail}</CardDescription>
           </div>
         </CardHeader>
+
         <CardContent>
           <Button
             variant="ghost"
@@ -220,11 +237,12 @@ export default function Register() {
             <ArrowLeft className="mr-2 h-4 w-4" />
             Change email
           </Button>
+
           <Form {...registerForm}>
             <form onSubmit={registerForm.handleSubmit(onRegister)} className="space-y-4">
               <FormField
                 control={registerForm.control}
-                name="verification_code"
+                name="code"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Verification Code</FormLabel>
@@ -250,9 +268,10 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={registerForm.control}
-                name="full_name"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Full Name</FormLabel>
@@ -263,6 +282,7 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={registerForm.control}
                 name="phone"
@@ -276,6 +296,7 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={registerForm.control}
                 name="password"
@@ -297,11 +318,7 @@ export default function Register() {
                           className="absolute right-0 top-0 h-full px-3"
                           onClick={() => setShowPassword(!showPassword)}
                         >
-                          {showPassword ? (
-                            <EyeOff className="h-4 w-4" />
-                          ) : (
-                            <Eye className="h-4 w-4" />
-                          )}
+                          {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                         </Button>
                       </div>
                     </FormControl>
@@ -309,6 +326,7 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={registerForm.control}
                 name="password_confirmation"
@@ -327,6 +345,7 @@ export default function Register() {
                   </FormItem>
                 )}
               />
+
               <Button type="submit" className="w-full" disabled={isLoading} data-testid="button-submit">
                 {isLoading ? (
                   <>
@@ -339,6 +358,7 @@ export default function Register() {
               </Button>
             </form>
           </Form>
+
           <div className="mt-6 text-center text-sm">
             <span className="text-muted-foreground">Already have an account? </span>
             <Link href="/login" className="text-primary font-medium hover:underline" data-testid="link-login">

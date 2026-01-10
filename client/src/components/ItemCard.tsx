@@ -1,3 +1,4 @@
+// ItemCard.tsx
 import { Heart } from 'lucide-react';
 import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
@@ -15,8 +16,9 @@ interface ItemCardProps {
 
 export function ItemCard({ item }: ItemCardProps) {
   const { isAuthenticated } = useAuth();
-  const { isFavorite, getFavoriteId, addFavorite, removeFavorite } = useFavorites();
+  const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { requireAuth } = useRequireAuth();
+
   const isFav = isFavorite(item.id);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
@@ -26,12 +28,12 @@ export function ItemCard({ item }: ItemCardProps) {
     requireAuth(async () => {
       try {
         if (isFav) {
-          const favId = getFavoriteId(item.id);
-          if (favId) await removeFavorite(favId);
+          await removeFavorite(item.id);
         } else {
           await addFavorite(item.id);
         }
       } catch {
+        // ignore
       }
     }, `/items/${item.id}`);
   };
@@ -74,9 +76,7 @@ export function ItemCard({ item }: ItemCardProps) {
             onClick={handleFavoriteClick}
             data-testid={`button-favorite-${item.id}`}
           >
-            <Heart
-              className={cn('h-4 w-4', isFav && 'fill-destructive text-destructive')}
-            />
+            <Heart className={cn('h-4 w-4', isFav && 'fill-destructive text-destructive')} />
           </Button>
 
           {item.is_donation && (
@@ -113,11 +113,7 @@ export function ItemCard({ item }: ItemCardProps) {
             )}
           </div>
 
-          {item.size && (
-            <p className="text-xs text-muted-foreground">
-              Size: {item.size}
-            </p>
-          )}
+          {item.size && <p className="text-xs text-muted-foreground">Size: {item.size}</p>}
         </CardContent>
       </Card>
     </Link>

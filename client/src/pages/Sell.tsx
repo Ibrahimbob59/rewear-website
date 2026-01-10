@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLocation, Link } from 'wouter';
 import { Upload, Loader2, Tag, DollarSign, Image as ImageIcon, X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
@@ -27,38 +27,81 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/contexts/AuthContext';
-import api, { type Category } from '@/services/api';
+import api from '@/services/api';
 
-const conditions = ['New', 'Like New', 'Good', 'Fair'];
-const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'One Size'];
+const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'One Size'];
 
-const categories: Category[] = [
-  { id: 1, name: "Women's", slug: 'womens' },
-  { id: 2, name: "Men's", slug: 'mens' },
-  { id: 3, name: 'Kids', slug: 'kids' },
-  { id: 4, name: 'Accessories', slug: 'accessories' },
-  { id: 5, name: 'Shoes', slug: 'shoes' },
+const conditionOptions: Array<{ label: string; value: 'new' | 'like_new' | 'good' | 'fair' }> = [
+  { label: 'New', value: 'new' },
+  { label: 'Like New', value: 'like_new' },
+  { label: 'Good', value: 'good' },
+  { label: 'Fair', value: 'fair' },
 ];
 
-const sellSchema = z.object({
-  title: z.string().min(3, 'Title must be at least 3 characters'),
-  description: z.string().min(10, 'Description must be at least 10 characters'),
-  price: z.string().refine((val) => !isNaN(parseFloat(val)) && parseFloat(val) >= 0, {
-    message: 'Price must be a valid number',
-  }),
-  category_id: z.string().min(1, 'Please select a category'),
-  condition: z.string().min(1, 'Please select a condition'),
-  size: z.string().optional(),
-  brand: z.string().optional(),
-  is_donation: z.boolean().default(false),
-});
+// ✅ MUST match backend enum exactly
+const categories = [
+  { label: 'Tops', value: 'tops' },
+  { label: 'Bottoms', value: 'bottoms' },
+  { label: 'Dresses', value: 'dresses' },
+  { label: 'Outerwear', value: 'outerwear' },
+  { label: 'Shoes', value: 'shoes' },
+  { label: 'Accessories', value: 'accessories' },
+  { label: 'Other', value: 'other' },
+] as const;
+
+const sellSchema = z
+  .object({
+    title: z.string().min(3, 'Title must be at least 3 characters'),
+    description: z.string().min(10, 'Description must be at least 10 characters'),
+
+    category: z.enum(['tops', 'bottoms', 'dresses', 'outerwear', 'shoes', 'accessories', 'other'], {
+      required_error: 'Please select a category',
+    }),
+
+    size: z.string().optional(),
+    condition: z.enum(['new', 'like_new', 'good', 'fair'], {
+      required_error: 'Please select a condition',
+    }),
+
+    brand: z.string().optional(),
+    color: z.string().optional(),
+
+    is_donation: z.boolean().default(false),
+
+    price: z.string().optional(),
+    donation_quantity: z.string().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.is_donation) {
+      const q = Number(data.donation_quantity);
+      if (!data.donation_quantity || Number.isNaN(q) || q < 1) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['donation_quantity'],
+          message: 'Quantity is required for donation items (min 1).',
+        });
+      }
+    } else {
+      const p = Number(data.price);
+      if (!data.price || Number.isNaN(p) || p < 0.01) {
+        ctx.addIssue({
+          code: 'custom',
+          path: ['price'],
+          message: 'Price is required for sale items (min $0.01).',
+        });
+      }
+    }
+  });
 
 type SellForm = z.infer<typeof sellSchema>;
 
 export default function Sell() {
   const [isLoading, setIsLoading] = useState(false);
-  const [imageFile, setImageFile] = useState<File | null>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  // ✅ backend wants images array (1-6)
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
+  const [imagePreviews, setImagePreviews] = useState<string[]>([]);
+
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { isAuthenticated } = useAuth();
@@ -68,39 +111,81 @@ export default function Sell() {
     defaultValues: {
       title: '',
       description: '',
-      price: '',
-      category_id: '',
-      condition: '',
+      category: 'tops',
       size: '',
+      condition: 'new',
       brand: '',
+      color: '',
       is_donation: false,
+      price: '',
+      donation_quantity: '',
     },
   });
 
   const isDonation = form.watch('is_donation');
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  useEffect(() => {
+    // clear the other field to avoid backend validator conflicts
+    if (isDonation) {
+      form.setValue('price', '');
+    } else {
+      form.setValue('donation_quantity', '');
     }
+  }, [isDonation, form]);
+
+  const handleImagesChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    const next = [...imageFiles, ...files].slice(0, 6);
+
+    // validate type/size
+    for (const f of next) {
+      if (!f.type.startsWith('image/')) {
+        toast({
+          title: 'Invalid file',
+          description: 'All files must be images.',
+          variant: 'destructive',
+        });
+        return;
+      }
+      if (f.size > 5 * 1024 * 1024) {
+        toast({
+          title: 'File too large',
+          description: 'Each image must be max 5MB.',
+          variant: 'destructive',
+        });
+        return;
+      }
+    }
+
+    setImageFiles(next);
+
+    // previews
+    Promise.all(
+      next.map(
+        (f) =>
+          new Promise<string>((resolve) => {
+            const reader = new FileReader();
+            reader.onloadend = () => resolve(reader.result as string);
+            reader.readAsDataURL(f);
+          })
+      )
+    ).then(setImagePreviews);
   };
 
-  const removeImage = () => {
-    setImageFile(null);
-    setImagePreview(null);
+  const removeImageAt = (index: number) => {
+    const nextFiles = imageFiles.filter((_, i) => i !== index);
+    const nextPreviews = imagePreviews.filter((_, i) => i !== index);
+    setImageFiles(nextFiles);
+    setImagePreviews(nextPreviews);
   };
 
   const onSubmit = async (data: SellForm) => {
-    if (!imageFile) {
+    if (imageFiles.length < 1) {
       toast({
-        title: 'Image Required',
-        description: 'Please upload an image of your item.',
+        title: 'Images Required',
+        description: 'Please upload at least one image.',
         variant: 'destructive',
       });
       return;
@@ -108,29 +193,52 @@ export default function Sell() {
 
     setIsLoading(true);
     try {
-      const formData = new FormData();
-      formData.append('title', data.title);
-      formData.append('description', data.description);
-      formData.append('price', isDonation ? '0' : data.price);
-      formData.append('category_id', data.category_id);
-      formData.append('condition', data.condition);
-      if (data.size) formData.append('size', data.size);
-      if (data.brand) formData.append('brand', data.brand);
-      formData.append('is_donation', String(data.is_donation));
-      formData.append('image', imageFile);
+      const fd = new FormData();
 
-      await api.items.create(formData);
+      fd.append('title', data.title);
+      fd.append('description', data.description);
+
+      // ✅ exact backend keys
+      fd.append('category', data.category);
+      fd.append('condition', data.condition);
+
+      if (data.size) fd.append('size', data.size);
+      if (data.brand) fd.append('brand', data.brand);
+      if (data.color) fd.append('color', data.color);
+
+      // ✅ boolean
+fd.append('is_donation', data.is_donation ? '1' : '0');
+
+      if (data.is_donation) {
+        fd.append('donation_quantity', String(Number(data.donation_quantity)));
+      } else {
+        fd.append('price', String(Number(data.price)));
+      }
+
+      // ✅ IMPORTANT: images must be array
+      // Laravel validation: 'images' => 'required|array' and 'images.*' => image...
+      imageFiles.forEach((file, idx) => {
+        fd.append(`images[${idx}]`, file);
+      });
+
+      await api.items.create(fd);
+
       toast({
         title: 'Item Listed!',
-        description: isDonation
+        description: data.is_donation
           ? 'Your donation item has been listed successfully.'
           : 'Your item has been listed for sale.',
       });
+
       setLocation('/my-listings');
     } catch (error: any) {
+      const msg =
+        error.response?.data?.message ||
+        (error.response?.data?.errors ? JSON.stringify(error.response.data.errors) : null) ||
+        'Failed to list item. Please try again.';
       toast({
         title: 'Listing Failed',
-        description: error.response?.data?.message || 'Failed to list item. Please try again.',
+        description: msg,
         variant: 'destructive',
       });
     } finally {
@@ -175,51 +283,69 @@ export default function Sell() {
               Provide accurate details to help buyers find your item.
             </CardDescription>
           </CardHeader>
+
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-                <div className="space-y-4">
+                {/* Images */}
+                <div className="space-y-3">
                   <FormLabel className="flex items-center gap-2">
                     <ImageIcon className="h-4 w-4" />
-                    Item Photo
+                    Item Photos (1–6)
                   </FormLabel>
-                  {imagePreview ? (
-                    <div className="relative w-full max-w-xs">
-                      <img
-                        src={imagePreview}
-                        alt="Preview"
-                        className="w-full aspect-square object-cover rounded-lg"
-                      />
-                      <Button
-                        type="button"
-                        variant="destructive"
-                        size="icon"
-                        className="absolute top-2 right-2"
-                        onClick={removeImage}
-                        data-testid="button-remove-image"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+
+                  {imagePreviews.length > 0 ? (
+                    <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                      {imagePreviews.map((src, idx) => (
+                        <div key={idx} className="relative">
+                          <img
+                            src={src}
+                            alt={`Preview ${idx + 1}`}
+                            className="w-full aspect-square object-cover rounded-lg"
+                          />
+                          <Button
+                            type="button"
+                            variant="destructive"
+                            size="icon"
+                            className="absolute top-2 right-2"
+                            onClick={() => removeImageAt(idx)}
+                          >
+                            <X className="h-4 w-4" />
+                          </Button>
+                        </div>
+                      ))}
                     </div>
                   ) : (
-                    <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors" data-testid="label-upload-image">
+                    <label className="flex flex-col items-center justify-center w-full h-40 border-2 border-dashed rounded-lg cursor-pointer hover:bg-muted/50 transition-colors">
                       <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <Upload className="h-10 w-10 text-muted-foreground mb-2" />
-                        <p className="text-sm text-muted-foreground">
-                          Click to upload item photo
-                        </p>
-                        <p className="text-xs text-muted-foreground mt-1">
-                          PNG, JPG up to 5MB
-                        </p>
+                        <p className="text-sm text-muted-foreground">Click to upload item photos</p>
+                        <p className="text-xs text-muted-foreground mt-1">Up to 6 images, max 5MB each</p>
                       </div>
                       <input
                         type="file"
                         className="hidden"
                         accept="image/*"
-                        onChange={handleImageChange}
-                        data-testid="input-image"
+                        multiple
+                        onChange={handleImagesChange}
                       />
                     </label>
+                  )}
+
+                  {imagePreviews.length > 0 && imagePreviews.length < 6 && (
+                    <div>
+                      <label className="inline-flex items-center gap-2 text-sm text-primary cursor-pointer">
+                        <Upload className="h-4 w-4" />
+                        Add more images
+                        <input
+                          type="file"
+                          className="hidden"
+                          accept="image/*"
+                          multiple
+                          onChange={handleImagesChange}
+                        />
+                      </label>
+                    </div>
                   )}
                 </div>
 
@@ -230,7 +356,7 @@ export default function Sell() {
                     <FormItem>
                       <FormLabel>Title</FormLabel>
                       <FormControl>
-                        <Input placeholder="e.g., Vintage Denim Jacket" {...field} data-testid="input-title" />
+                        <Input placeholder="e.g., Vintage Denim Jacket" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -245,10 +371,9 @@ export default function Sell() {
                       <FormLabel>Description</FormLabel>
                       <FormControl>
                         <Textarea
-                          placeholder="Describe your item in detail - material, fit, any flaws, etc."
+                          placeholder="Material, fit, flaws, etc."
                           className="min-h-[100px]"
                           {...field}
-                          data-testid="input-description"
                         />
                       </FormControl>
                       <FormMessage />
@@ -259,20 +384,20 @@ export default function Sell() {
                 <div className="grid sm:grid-cols-2 gap-4">
                   <FormField
                     control={form.control}
-                    name="category_id"
+                    name="category"
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Category</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger data-testid="select-category">
+                            <SelectTrigger>
                               <SelectValue placeholder="Select category" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {categories.map((category) => (
-                              <SelectItem key={category.id} value={String(category.id)}>
-                                {category.name}
+                            {categories.map((c) => (
+                              <SelectItem key={c.value} value={c.value}>
+                                {c.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -290,14 +415,14 @@ export default function Sell() {
                         <FormLabel>Condition</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger data-testid="select-condition">
+                            <SelectTrigger>
                               <SelectValue placeholder="Select condition" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {conditions.map((condition) => (
-                              <SelectItem key={condition} value={condition}>
-                                {condition}
+                            {conditionOptions.map((c) => (
+                              <SelectItem key={c.value} value={c.value}>
+                                {c.label}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -317,14 +442,14 @@ export default function Sell() {
                         <FormLabel>Size (Optional)</FormLabel>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl>
-                            <SelectTrigger data-testid="select-size">
+                            <SelectTrigger>
                               <SelectValue placeholder="Select size" />
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            {sizes.map((size) => (
-                              <SelectItem key={size} value={size}>
-                                {size}
+                            {sizes.map((s) => (
+                              <SelectItem key={s} value={s}>
+                                {s}
                               </SelectItem>
                             ))}
                           </SelectContent>
@@ -341,7 +466,7 @@ export default function Sell() {
                       <FormItem>
                         <FormLabel>Brand (Optional)</FormLabel>
                         <FormControl>
-                          <Input placeholder="e.g., Zara, H&M" {...field} data-testid="input-brand" />
+                          <Input placeholder="e.g., Zara" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -351,27 +476,51 @@ export default function Sell() {
 
                 <FormField
                   control={form.control}
+                  name="color"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Color (Optional)</FormLabel>
+                      <FormControl>
+                        <Input placeholder="e.g., Black" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+
+                <FormField
+                  control={form.control}
                   name="is_donation"
                   render={({ field }) => (
                     <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4">
                       <div className="space-y-0.5">
                         <FormLabel className="text-base">Donate this item</FormLabel>
                         <FormDescription>
-                          List this item as a free donation instead of selling it.
+                          If donation is enabled, you must provide quantity and no price.
                         </FormDescription>
                       </div>
                       <FormControl>
-                        <Switch
-                          checked={field.value}
-                          onCheckedChange={field.onChange}
-                          data-testid="switch-donation"
-                        />
+                        <Switch checked={field.value} onCheckedChange={field.onChange} />
                       </FormControl>
                     </FormItem>
                   )}
                 />
 
-                {!isDonation && (
+                {isDonation ? (
+                  <FormField
+                    control={form.control}
+                    name="donation_quantity"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Donation Quantity</FormLabel>
+                        <FormControl>
+                          <Input type="number" min="1" step="1" placeholder="1" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                ) : (
                   <FormField
                     control={form.control}
                     name="price"
@@ -382,14 +531,7 @@ export default function Sell() {
                           Price (USD)
                         </FormLabel>
                         <FormControl>
-                          <Input
-                            type="number"
-                            step="0.01"
-                            min="0"
-                            placeholder="0.00"
-                            {...field}
-                            data-testid="input-price"
-                          />
+                          <Input type="number" step="0.01" min="0.01" placeholder="0.00" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -397,7 +539,7 @@ export default function Sell() {
                   />
                 )}
 
-                <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="button-submit">
+                <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                   {isLoading ? (
                     <>
                       <Loader2 className="mr-2 h-4 w-4 animate-spin" />

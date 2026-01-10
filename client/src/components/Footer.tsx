@@ -108,11 +108,11 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2 text-muted-foreground">
                 <Phone className="h-4 w-4" />
-                <span>+1 (555) 123-4567</span>
+                <span>+961 81 877 603</span>
               </li>
               <li className="flex items-start gap-2 text-muted-foreground">
                 <MapPin className="h-4 w-4 mt-0.5" />
-                <span>123 Eco Street, Green City, EC 12345</span>
+                <span>Beirut, Lebanon</span>
               </li>
             </ul>
           </div>

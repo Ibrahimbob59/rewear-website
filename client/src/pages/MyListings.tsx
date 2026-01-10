@@ -33,7 +33,7 @@ export default function MyListings() {
   const { data: itemsData, isLoading } = useQuery({
     queryKey: ['/api/my-items'],
     queryFn: async () => {
-      const response = await api.items.getMyItems();
+      const response = await api.items.getAll();
       return response.data;
     },
   });

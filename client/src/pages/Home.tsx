@@ -26,6 +26,7 @@ import {
 import { ItemCard } from '@/components/ItemCard';
 import { ItemsGridSkeleton } from '@/components/ItemCardSkeleton';
 import api, { type Item, type Category, type ItemFilters } from '@/services/api';
+import { Link } from 'wouter';
 
 const conditions = ['New', 'Like New', 'Good', 'Fair'];
 const sizes = ['XS', 'S', 'M', 'L', 'XL', 'XXL'];
@@ -185,14 +186,16 @@ export default function Home() {
               <Button size="lg" className="bg-white text-primary hover:bg-white/90" data-testid="button-hero-shop">
                 Shop Now
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                className="border-white/30 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20"
-                data-testid="button-hero-sell"
-              >
-                Start Selling
-              </Button>
+              <Link href="/sell">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="border-white/30 text-white bg-white/10 backdrop-blur-sm hover:bg-white/20"
+                  data-testid="button-hero-sell"
+                >
+                  Start Selling
+                </Button>
+              </Link>
             </div>
           </div>
         </div>

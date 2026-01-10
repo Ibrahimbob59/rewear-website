@@ -1,5 +1,6 @@
+// Favorites.tsx
 import { Link } from 'wouter';
-import { Heart, Loader2 } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ItemCard } from '@/components/ItemCard';
@@ -46,13 +47,11 @@ export default function Favorites() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
-      <h1 className="text-2xl md:text-3xl font-bold mb-8">
-        My Favorites ({favorites.length})
-      </h1>
+      <h1 className="text-2xl md:text-3xl font-bold mb-8">My Favorites ({favorites.length})</h1>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {favorites.map((favorite) => (
-          <ItemCard key={favorite.id} item={favorite.item} />
+          <ItemCard key={favorite.item_id} item={favorite.item} />
         ))}
       </div>
     </div>

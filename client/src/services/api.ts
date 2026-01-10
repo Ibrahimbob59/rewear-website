@@ -39,25 +39,35 @@ export interface Item {
   updated_at: string;
 }
 
+export interface Address {
+  id: number;
+  label: string;
+  full_name: string;
+  phone: string;
+  address_line1: string;
+  address_line2?: string | null;
+  city: string;
+  state: string;
+  postal_code: string;
+  country: string;
+  latitude: number;
+  longitude: number;
+  is_default: boolean;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface Order {
   id: number;
   user_id: number;
-  items: OrderItem[];
-  total: number;
+  items?: any[];
+  total?: number;
   total_amount?: number;
   status: 'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled';
-  shipping_address: string;
-  delivery_address?: string;
+  shipping_address?: string;
+  delivery_address?: Address;
   created_at: string;
   updated_at: string;
-}
-
-export interface OrderItem {
-  id: number;
-  item_id: number;
-  item: Item;
-  quantity: number;
-  price: number;
 }
 
 export interface Favorite {
@@ -76,6 +86,9 @@ export interface RegisterCodeData {
   email: string;
 }
 
+/**
+ * ✅ KEEP UI SHAPE (your current frontend)
+ */
 export interface RegisterData {
   full_name: string;
   email: string;
@@ -125,108 +138,173 @@ export interface DriverApplicationData {
 
 const api = {
   auth: {
-    requestCode: (data: RegisterCodeData) => 
+    requestCode: (data: RegisterCodeData) =>
       axiosClient.post('/api/auth/register-code', data),
-    resendCode: (data: RegisterCodeData) => 
+
+    resendCode: (data: RegisterCodeData) =>
       axiosClient.post('/api/auth/resend-code', data),
-    register: (data: RegisterData) => 
-      axiosClient.post('/api/auth/register', data),
-    login: (data: LoginData) => 
+
+    /**
+     * ✅ Map UI -> DOC:
+     * UI sends: full_name + verification_code
+     * API expects: name + code
+     */
+    register: (data: RegisterData) =>
+      axiosClient.post('/api/auth/register', {
+        email: data.email,
+        phone: data.phone,
+        password: data.password,
+        password_confirmation: data.password_confirmation,
+        name: data.full_name,
+        code: data.verification_code,
+      }),
+
+    login: (data: LoginData) =>
       axiosClient.post('/api/auth/login', data),
-    logout: () => 
+
+    logout: () =>
       axiosClient.post('/api/auth/logout'),
-    logoutAll: () => 
+
+    logoutAll: () =>
       axiosClient.post('/api/auth/logout-all'),
-    me: () => 
+
+    me: () =>
       axiosClient.get('/api/auth/me'),
-    refreshToken: (refreshToken: string) => 
+
+    refreshToken: (refreshToken: string) =>
       axiosClient.post('/api/auth/refresh-token', { refresh_token: refreshToken }),
-    validateToken: () => 
+
+    validateToken: () =>
       axiosClient.post('/api/auth/validate'),
-    updateProfile: (data: Partial<User>) => 
+
+    updateProfile: (data: Partial<User>) =>
       axiosClient.put('/api/auth/profile', data),
-    changePassword: (data: { current_password: string; password: string; password_confirmation: string }) => 
+
+    changePassword: (data: { current_password: string; password: string; password_confirmation: string }) =>
       axiosClient.put('/api/auth/password', data),
   },
 
+  /**
+   * ✅ Option 1: Add alias that Profile.tsx expects:
+   * api.profile.update(...)
+   */
+  profile: {
+    update: (data: Partial<User>) =>
+      axiosClient.put('/api/auth/profile', data),
+  },
+
   items: {
-    getAll: (filters?: ItemFilters) => 
+    getAll: (filters?: ItemFilters) =>
       axiosClient.get('/api/items', { params: filters }),
-    getById: (id: number) => 
+
+    getById: (id: number) =>
       axiosClient.get(`/api/items/${id}`),
-    create: (data: FormData) => 
+
+    create: (data: FormData) =>
       axiosClient.post('/api/items', data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
       }),
-    update: (id: number, data: FormData) => 
+
+    update: (id: number, data: FormData) =>
       axiosClient.put(`/api/items/${id}`, data, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
       }),
-    delete: (id: number) => 
+
+    delete: (id: number) =>
       axiosClient.delete(`/api/items/${id}`),
-    getMyListings: () => 
+
+    getMyListings: () =>
       axiosClient.get('/api/items/my-listings'),
-    toggleStatus: (id: number) => 
+
+    toggleStatus: (id: number) =>
       axiosClient.post(`/api/items/${id}/toggle-status`),
   },
 
   orders: {
-    create: (data: { items: { item_id: number; quantity: number }[]; delivery_address_id?: number; notes?: string }) =>
+    create: (data: { item_id: number; delivery_address_id: number; delivery_fee: number }) =>
       axiosClient.post('/api/orders', data),
-    getAll: () => 
+
+    getAll: () =>
       axiosClient.get('/api/orders'),
-    getAsSeller: () => 
+
+    getAsSeller: () =>
       axiosClient.get('/api/orders/as-seller'),
-    getById: (id: number) => 
+
+    getById: (id: number) =>
       axiosClient.get(`/api/orders/${id}`),
-    cancel: (id: number) => 
+
+    cancel: (id: number) =>
       axiosClient.put(`/api/orders/${id}/cancel`),
-    confirm: (id: number) => 
+
+    confirm: (id: number) =>
       axiosClient.post(`/api/orders/${id}/confirm`),
   },
 
   favorites: {
-    getAll: () => 
+    getAll: () =>
       axiosClient.get('/api/favorites'),
-    add: (itemId: number) => 
+
+    add: (itemId: number) =>
       axiosClient.post(`/api/favorites/${itemId}`),
-    remove: (itemId: number) => 
+
+    remove: (itemId: number) =>
       axiosClient.delete(`/api/favorites/${itemId}`),
   },
 
   addresses: {
-    getAll: () => 
+    getAll: () =>
       axiosClient.get('/api/addresses'),
-    create: (data: { address_line: string; city: string; region: string; postal_code?: string; is_default?: boolean }) =>
-      axiosClient.post('/api/addresses', data),
-    update: (id: number, data: { address_line: string; city: string; region: string; postal_code?: string; is_default?: boolean }) =>
+
+    // ✅ Match doc fields (and your Checkout form)
+    create: (data: {
+      label: string;
+      full_name: string;
+      phone: string;
+      address_line1: string;
+      address_line2?: string;
+      city: string;
+      state: string;
+      postal_code: string;
+      country: string;
+      latitude: number;
+      longitude: number;
+      is_default?: boolean;
+    }) => axiosClient.post('/api/addresses', data),
+
+    update: (id: number, data: Partial<Address>) =>
       axiosClient.put(`/api/addresses/${id}`, data),
-    delete: (id: number) => 
+
+    delete: (id: number) =>
       axiosClient.delete(`/api/addresses/${id}`),
   },
 
   driverApplications: {
-    apply: (data: DriverApplicationData) => 
+    apply: (data: DriverApplicationData) =>
       axiosClient.post('/api/driver-applications', data),
-    getMyApplication: () => 
+
+    getMyApplication: () =>
       axiosClient.get('/api/driver-applications/my-application'),
-    checkEligibility: () => 
+
+    checkEligibility: () =>
       axiosClient.get('/api/driver-applications/eligibility'),
   },
 
   notifications: {
-    getAll: () => 
+    getAll: () =>
       axiosClient.get('/api/notifications'),
-    getUnreadCount: () => 
+
+    getUnreadCount: () =>
       axiosClient.get('/api/notifications/unread-count'),
-    markAsRead: (id: number) => 
+
+    markAsRead: (id: number) =>
       axiosClient.post(`/api/notifications/${id}/mark-read`),
-    markAllAsRead: () => 
+
+    markAllAsRead: () =>
       axiosClient.post('/api/notifications/mark-all-read'),
   },
 
   stats: {
-    getPlatformStats: () => 
+    getPlatformStats: () =>
       axiosClient.get('/api/admin/stats'),
   },
 

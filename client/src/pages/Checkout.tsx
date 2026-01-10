@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'wouter';
-import { ChevronLeft, Loader2, CheckCircle, MapPin } from 'lucide-react';
+import { ChevronLeft, Loader2, CheckCircle, MapPin, Plus } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -19,76 +19,180 @@ import {
 } from '@/components/ui/form';
 import { useToast } from '@/hooks/use-toast';
 import { useCart } from '@/contexts/CartContext';
-import api from '@/services/api';
+import api, { type Address } from '@/services/api';
 
-const checkoutSchema = z.object({
-  full_name: z.string().min(2, 'Full name is required'),
-  email: z.string().email('Valid email is required'),
-  phone: z.string().min(10, 'Valid phone number is required'),
-  address: z.string().min(10, 'Full address is required'),
-  city: z.string().min(2, 'City is required'),
-  postal_code: z.string().min(4, 'Postal code is required'),
+// --------------------
+// Forms
+// --------------------
+
+const orderSchema = z.object({
+  delivery_address_id: z.coerce.number().int().positive('Please select an address'),
   notes: z.string().optional(),
 });
+type OrderForm = z.infer<typeof orderSchema>;
 
-type CheckoutForm = z.infer<typeof checkoutSchema>;
+const addressSchema = z.object({
+  label: z.string().min(2, 'Label is required'),
+  full_name: z.string().min(2, 'Full name is required'),
+  phone: z.string().min(7, 'Phone is required'),
+  address_line1: z.string().min(5, 'Address line 1 is required'),
+  address_line2: z.string().optional(),
+  city: z.string().min(2, 'City is required'),
+  state: z.string().min(2, 'State is required'),
+  postal_code: z.string().min(2, 'Postal code is required'),
+  country: z.string().min(2, 'Country is required'),
+  latitude: z.coerce.number(),
+  longitude: z.coerce.number(),
+  is_default: z.boolean().optional(),
+});
+type AddressForm = z.infer<typeof addressSchema>;
 
 export default function Checkout() {
   const [isLoading, setIsLoading] = useState(false);
   const [orderComplete, setOrderComplete] = useState(false);
   const [orderId, setOrderId] = useState<number | null>(null);
+
+  const [addresses, setAddresses] = useState<Address[]>([]);
+  const [isAddressLoading, setIsAddressLoading] = useState(true);
+  const [showNewAddress, setShowNewAddress] = useState(false);
+
   const [, setLocation] = useLocation();
   const { toast } = useToast();
   const { items, getTotal, clearCart } = useCart();
 
-  const form = useForm<CheckoutForm>({
-    resolver: zodResolver(checkoutSchema),
+  // Enforce 1 item only (API order is single item_id)
+  useEffect(() => {
+    if (items.length === 0) {
+      setLocation('/cart');
+      return;
+    }
+    if (items.length > 1) {
+      toast({
+        title: 'Only 1 item per order',
+        description: 'Please keep only one item in cart, then checkout.',
+        variant: 'destructive',
+      });
+      setLocation('/cart');
+    }
+  }, [items.length, setLocation, toast]);
+
+  const firstCartItem = useMemo(() => items[0]?.item, [items]);
+
+  const orderForm = useForm<OrderForm>({
+    resolver: zodResolver(orderSchema),
     defaultValues: {
-      full_name: '',
-      email: '',
-      phone: '',
-      address: '',
-      city: '',
-      postal_code: '',
+      delivery_address_id: undefined as unknown as number,
       notes: '',
     },
   });
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
-  };
+  const addressForm = useForm<AddressForm>({
+    resolver: zodResolver(addressSchema),
+    defaultValues: {
+      label: 'Home',
+      full_name: '',
+      phone: '',
+      address_line1: '',
+      address_line2: '',
+      city: '',
+      state: '',
+      postal_code: '',
+      country: 'Lebanon',
+      latitude: 33.8938,
+      longitude: 35.5018,
+      is_default: false,
+    },
+  });
 
-  const onSubmit = async (data: CheckoutForm) => {
-    if (items.length === 0) {
+  const formatPrice = (price: number) =>
+    new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(price);
+
+  const loadAddresses = async () => {
+    setIsAddressLoading(true);
+    try {
+      const res = await api.addresses.getAll();
+      const list: Address[] = res.data?.data?.addresses || res.data?.addresses || [];
+      setAddresses(list);
+
+      // auto-select default or first
+      const def = list.find((a) => a.is_default);
+      const first = def?.id ?? list[0]?.id;
+      if (first) orderForm.setValue('delivery_address_id', first);
+
+      setShowNewAddress(list.length === 0);
+    } catch (e: any) {
       toast({
-        title: 'Cart is empty',
-        description: 'Please add items to your cart before checkout.',
+        title: 'Failed to load addresses',
+        description: e.response?.data?.message || 'Could not load your saved addresses.',
         variant: 'destructive',
       });
-      return;
+      setShowNewAddress(true);
+    } finally {
+      setIsAddressLoading(false);
     }
+  };
+
+  useEffect(() => {
+    loadAddresses();
+
+    // auto-fill lat/lng if allowed
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          addressForm.setValue('latitude', pos.coords.latitude);
+          addressForm.setValue('longitude', pos.coords.longitude);
+        },
+        () => {},
+        { enableHighAccuracy: true, timeout: 5000 }
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // (Keep this for "Add New Address" flow if you want to create address and NOT auto-place order)
+  const createAddressThenSelect = async (data: AddressForm) => {
+    setIsLoading(true);
+    try {
+      const res = await api.addresses.create({
+        ...data,
+        is_default: !!data.is_default,
+      });
+
+      const newId = res.data?.data?.id ?? res.data?.data?.address?.id ?? res.data?.id;
+      if (!newId) throw new Error('No address id returned');
+
+      toast({ title: 'Address saved', description: 'Your new address has been added.' });
+
+      await loadAddresses();
+      orderForm.setValue('delivery_address_id', Number(newId));
+      setShowNewAddress(false);
+    } catch (e: any) {
+      toast({
+        title: 'Address creation failed',
+        description: e.response?.data?.message || 'Could not create address. Please check fields.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const placeOrder = async (data: OrderForm) => {
+    if (!firstCartItem) return;
 
     setIsLoading(true);
     try {
-      const shippingAddress = `${data.full_name}\n${data.address}\n${data.city}, ${data.postal_code}\nPhone: ${data.phone}\nEmail: ${data.email}${data.notes ? `\nNotes: ${data.notes}` : ''}`;
-
-      const orderItems = items.map(({ item, quantity }) => ({
-        item_id: item.id,
-        quantity,
-      }));
-
       const response = await api.orders.create({
-        items: orderItems,
-        shipping_address: shippingAddress,
+        item_id: firstCartItem.id,
+        delivery_address_id: data.delivery_address_id,
+        delivery_fee: 0,
       });
 
       const newOrderId = response.data?.data?.id || response.data?.id;
       setOrderId(newOrderId);
       setOrderComplete(true);
       clearCart();
+
       toast({
         title: 'Order Placed!',
         description: 'Your order has been successfully placed.',
@@ -97,6 +201,49 @@ export default function Checkout() {
       toast({
         title: 'Order Failed',
         description: error.response?.data?.message || 'Failed to place order. Please try again.',
+        variant: 'destructive',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // ✅ OPTION 1: Save Address then immediately Place Order
+  const saveAddressAndPlaceOrder = async (data: AddressForm) => {
+    if (!firstCartItem) return;
+
+    setIsLoading(true);
+    try {
+      // 1) Create address
+      const res = await api.addresses.create({
+        ...data,
+        is_default: !!data.is_default,
+      });
+
+      const newId = res.data?.data?.id ?? res.data?.data?.address?.id ?? res.data?.id;
+      if (!newId) throw new Error('No address id returned');
+
+      // 2) Place order using newly created address id
+      const response = await api.orders.create({
+        item_id: firstCartItem.id,
+        delivery_address_id: Number(newId),
+        delivery_fee: 0,
+      });
+
+      const newOrderId = response.data?.data?.id || response.data?.id;
+
+      setOrderId(newOrderId);
+      setOrderComplete(true);
+      clearCart();
+
+      toast({
+        title: 'Order Placed!',
+        description: 'Address saved and order placed successfully.',
+      });
+    } catch (e: any) {
+      toast({
+        title: 'Checkout failed',
+        description: e.response?.data?.message || 'Could not complete checkout.',
         variant: 'destructive',
       });
     } finally {
@@ -125,7 +272,9 @@ export default function Checkout() {
               <Button data-testid="button-view-order">View Order</Button>
             </Link>
             <Link href="/">
-              <Button variant="outline" data-testid="button-continue-shopping">Continue Shopping</Button>
+              <Button variant="outline" data-testid="button-continue-shopping">
+                Continue Shopping
+              </Button>
             </Link>
           </div>
         </div>
@@ -133,10 +282,7 @@ export default function Checkout() {
     );
   }
 
-  if (items.length === 0) {
-    setLocation('/cart');
-    return null;
-  }
+  if (!firstCartItem) return null;
 
   return (
     <div className="container mx-auto px-4 md:px-6 lg:px-8 py-8">
@@ -155,123 +301,289 @@ export default function Checkout() {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <MapPin className="h-5 w-5" />
-                Shipping Information
+                Delivery Address
               </CardTitle>
             </CardHeader>
-            <CardContent>
-              <Form {...form}>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="full_name"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Full Name</FormLabel>
-                          <FormControl>
-                            <Input placeholder="John Doe" {...field} data-testid="input-full-name" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="email"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Email</FormLabel>
-                          <FormControl>
-                            <Input type="email" placeholder="you@example.com" {...field} data-testid="input-email" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="phone"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Phone Number</FormLabel>
-                        <FormControl>
-                          <Input placeholder="+1 (555) 123-4567" {...field} data-testid="input-phone" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="address"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Street Address</FormLabel>
-                        <FormControl>
-                          <Input placeholder="123 Main St, Apt 4B" {...field} data-testid="input-address" />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <FormField
-                      control={form.control}
-                      name="city"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>City</FormLabel>
-                          <FormControl>
-                            <Input placeholder="New York" {...field} data-testid="input-city" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="postal_code"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormLabel>Postal Code</FormLabel>
-                          <FormControl>
-                            <Input placeholder="10001" {...field} data-testid="input-postal-code" />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-                  <FormField
-                    control={form.control}
-                    name="notes"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormLabel>Order Notes (Optional)</FormLabel>
-                        <FormControl>
-                          <Textarea
-                            placeholder="Any special instructions for delivery..."
-                            {...field}
-                            data-testid="input-notes"
+
+            <CardContent className="space-y-6">
+              {isAddressLoading ? (
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Loading your addresses...
+                </div>
+              ) : (
+                <>
+                  {/* FLOW A: saved addresses */}
+                  {!showNewAddress && addresses.length > 0 && (
+                    <Form {...orderForm}>
+                      <form onSubmit={orderForm.handleSubmit(placeOrder)} className="space-y-4">
+                        <FormField
+                          control={orderForm.control}
+                          name="delivery_address_id"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Select Saved Address</FormLabel>
+                              <FormControl>
+                                <select
+                                  className="w-full h-10 rounded-md border bg-background px-3 text-sm"
+                                  value={field.value ?? ''}
+                                  onChange={(e) => field.onChange(Number(e.target.value))}
+                                >
+                                  {addresses.map((a) => (
+                                    <option key={a.id} value={a.id}>
+                                      {a.label} — {a.address_line1}, {a.city} ({a.phone})
+                                    </option>
+                                  ))}
+                                </select>
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <FormField
+                          control={orderForm.control}
+                          name="notes"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Order Notes (Optional)</FormLabel>
+                              <FormControl>
+                                <Textarea
+                                  placeholder="Any special instructions for delivery..."
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+
+                        <div className="flex gap-3">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => setShowNewAddress(true)}
+                            disabled={isLoading}
+                          >
+                            <Plus className="h-4 w-4 mr-2" />
+                            Add New Address
+                          </Button>
+
+                          <Button type="submit" className="flex-1" disabled={isLoading}>
+                            {isLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Processing...
+                              </>
+                            ) : (
+                              `Place Order - ${formatPrice(getTotal())}`
+                            )}
+                          </Button>
+                        </div>
+                      </form>
+                    </Form>
+                  )}
+
+                  {/* FLOW B: no addresses -> create */}
+                  {(showNewAddress || addresses.length === 0) && (
+                    <div className="space-y-4">
+                      <div className="flex items-center justify-between">
+                        <p className="text-sm text-muted-foreground">
+                          Create a new delivery address (lat/lng required).
+                        </p>
+                        {addresses.length > 0 && (
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            onClick={() => setShowNewAddress(false)}
+                            disabled={isLoading}
+                          >
+                            Use saved address
+                          </Button>
+                        )}
+                      </div>
+
+                      <Form {...addressForm}>
+                        <form
+                          // ✅ CHANGED: this now saves address AND places order
+                          onSubmit={addressForm.handleSubmit(saveAddressAndPlaceOrder)}
+                          className="space-y-4"
+                        >
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <FormField
+                              control={addressForm.control}
+                              name="label"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Label</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Home / Office" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={addressForm.control}
+                              name="full_name"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Full Name</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="John Doe" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <FormField
+                            control={addressForm.control}
+                            name="phone"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Phone</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="+961..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
                           />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <Button type="submit" className="w-full" size="lg" disabled={isLoading} data-testid="button-place-order">
-                    {isLoading ? (
-                      <>
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                        Processing...
-                      </>
-                    ) : (
-                      `Place Order - ${formatPrice(getTotal())}`
-                    )}
-                  </Button>
-                </form>
-              </Form>
+
+                          <FormField
+                            control={addressForm.control}
+                            name="address_line1"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Address Line 1</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Street, building..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <FormField
+                            control={addressForm.control}
+                            name="address_line2"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Address Line 2 (Optional)</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Apt, floor..." {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <FormField
+                              control={addressForm.control}
+                              name="city"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>City</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Beirut" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={addressForm.control}
+                              name="state"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>State</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Beirut" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <FormField
+                              control={addressForm.control}
+                              name="postal_code"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Postal Code</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="1107" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={addressForm.control}
+                              name="country"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Country</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Lebanon" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          <div className="grid sm:grid-cols-2 gap-4">
+                            <FormField
+                              control={addressForm.control}
+                              name="latitude"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Latitude</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="33.8938" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                            <FormField
+                              control={addressForm.control}
+                              name="longitude"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Longitude</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="35.5018" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+
+                          {/* ✅ CHANGED BUTTON: final action */}
+                          <Button type="submit" className="w-full" disabled={isLoading}>
+                            {isLoading ? (
+                              <>
+                                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                Processing...
+                              </>
+                            ) : (
+                              `Save Address & Place Order - ${formatPrice(getTotal())}`
+                            )}
+                          </Button>
+                        </form>
+                      </Form>
+                    </div>
+                  )}
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -287,7 +599,11 @@ export default function Checkout() {
                   <div key={item.id} className="flex gap-3">
                     <div className="w-16 h-16 rounded-md overflow-hidden bg-muted shrink-0">
                       {item.image && (
-                        <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          className="w-full h-full object-cover"
+                        />
                       )}
                     </div>
                     <div className="flex-1 min-w-0">

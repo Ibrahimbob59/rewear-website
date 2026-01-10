@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { User, Mail, Phone, MapPin, Loader2, Save } from 'lucide-react';
+import { User as UserIcon, Mail, Phone, MapPin, Loader2, Save } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -37,7 +37,7 @@ export default function Profile() {
   const form = useForm<ProfileForm>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
-      name: user?.name || '',
+      name: user?.name || user?.full_name || '',
       email: user?.email || '',
       phone: user?.phone || '',
       address: user?.address || '',
@@ -47,9 +47,24 @@ export default function Profile() {
   const onSubmit = async (data: ProfileForm) => {
     setIsLoading(true);
     try {
-      const response = await api.profile.update(data);
-      const updatedUser = response.data?.data || response.data;
-      updateUser(updatedUser);
+      // ✅ Backend docs: PUT /auth/profile expects name + phone
+      const response = await api.profile.update({
+        name: data.name,
+        phone: data.phone,
+      });
+
+      const updated = response.data?.data || response.data;
+
+      // ✅ Keep email/address locally (since backend may not return them)
+      const mergedUser = {
+        ...user,
+        ...updated,
+        email: data.email,
+        address: data.address,
+      };
+
+      updateUser(mergedUser);
+
       toast({
         title: 'Profile Updated',
         description: 'Your profile has been successfully updated.',
@@ -77,10 +92,10 @@ export default function Profile() {
                 <Avatar className="h-24 w-24 mb-4">
                   <AvatarImage src={user?.avatar} />
                   <AvatarFallback className="text-2xl">
-                    {user?.name?.charAt(0)?.toUpperCase() || 'U'}
+                    {(user?.name || user?.full_name)?.charAt(0)?.toUpperCase() || 'U'}
                   </AvatarFallback>
                 </Avatar>
-                <h2 className="text-xl font-semibold">{user?.name}</h2>
+                <h2 className="text-xl font-semibold">{user?.name || user?.full_name}</h2>
                 <p className="text-muted-foreground">{user?.email}</p>
               </div>
             </CardContent>
@@ -102,7 +117,7 @@ export default function Profile() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel className="flex items-center gap-2">
-                          <User className="h-4 w-4" />
+                          <UserIcon className="h-4 w-4" />
                           Full Name
                         </FormLabel>
                         <FormControl>
@@ -112,6 +127,7 @@ export default function Profile() {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="email"
@@ -128,6 +144,7 @@ export default function Profile() {
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="phone"
@@ -138,12 +155,13 @@ export default function Profile() {
                           Phone Number
                         </FormLabel>
                         <FormControl>
-                          <Input placeholder="+1 (555) 123-4567" {...field} data-testid="input-phone" />
+                          <Input placeholder="+961..." {...field} data-testid="input-phone" />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
+
                   <FormField
                     control={form.control}
                     name="address"
@@ -155,7 +173,7 @@ export default function Profile() {
                         </FormLabel>
                         <FormControl>
                           <Textarea
-                            placeholder="Enter your full address..."
+                            placeholder="Enter your full address."
                             {...field}
                             data-testid="input-address"
                           />
@@ -164,6 +182,7 @@ export default function Profile() {
                       </FormItem>
                     )}
                   />
+
                   <Button type="submit" disabled={isLoading} data-testid="button-save">
                     {isLoading ? (
                       <>

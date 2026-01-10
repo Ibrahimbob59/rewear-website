@@ -104,7 +104,7 @@ export default function Orders() {
                       Placed on {formatDate(order.created_at)}
                     </p>
                     <p className="text-sm">
-                      {order.items?.length || 0} item(s) • <span className="font-medium text-primary">{formatPrice(order.total)}</span>
+                      {order.items?.length || 0} item(s) • <span className="font-medium text-primary">{formatPrice(order.total ?? 0)}</span>
                     </p>
                   </div>
                   <div className="flex items-center">

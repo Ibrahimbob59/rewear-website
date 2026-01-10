@@ -160,9 +160,9 @@ export default function OrderDetails() {
             <CardContent className="space-y-4">
               <div className="space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Subtotal</span>
-                  <span>{formatPrice(order.total)}</span>
-                </div>
+                    <span className="text-muted-foreground">Subtotal</span>
+                    <span>{formatPrice(order.total ?? 0)}</span>
+                  </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-muted-foreground">Shipping</span>
                   <span>Free</span>
@@ -171,7 +171,7 @@ export default function OrderDetails() {
               <Separator />
               <div className="flex justify-between font-semibold text-lg">
                 <span>Total</span>
-                <span className="text-primary">{formatPrice(order.total)}</span>
+                <span className="text-primary">{formatPrice(order.total ?? 0)}</span>
               </div>
               <Separator />
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
