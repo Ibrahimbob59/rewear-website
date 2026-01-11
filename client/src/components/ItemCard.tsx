@@ -1,17 +1,22 @@
-// ItemCard.tsx
+import * as React from 'react';
 import { Heart } from 'lucide-react';
 import { Link } from 'wouter';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import type { Item } from '@/services/api';
+import type { Item, ItemImage } from '@/services/api';
 import { useAuth } from '@/contexts/AuthContext';
 import { useFavorites } from '@/contexts/FavoritesContext';
 import { useRequireAuth } from '@/components/RequireAuthAction';
 import { cn } from '@/lib/utils';
 
 interface ItemCardProps {
-  item: Item;
+  item?: Item | null;
+}
+
+function getImageUrl(img: string | ItemImage | undefined | null): string | undefined {
+  if (!img) return undefined;
+  return typeof img === 'string' ? img : img.url;
 }
 
 export function ItemCard({ item }: ItemCardProps) {
@@ -19,7 +24,15 @@ export function ItemCard({ item }: ItemCardProps) {
   const { isFavorite, addFavorite, removeFavorite } = useFavorites();
   const { requireAuth } = useRequireAuth();
 
-  const isFav = isFavorite(item.id);
+  if (!item || item.id == null) return null;
+
+  const itemId = item.id;
+  const isFav = isFavorite(itemId);
+
+  const coverImage =
+    item.primary_image ||
+    item.image ||
+    getImageUrl(item.images?.[0]);
 
   const handleFavoriteClick = async (e: React.MouseEvent) => {
     e.preventDefault();
@@ -27,34 +40,27 @@ export function ItemCard({ item }: ItemCardProps) {
 
     requireAuth(async () => {
       try {
-        if (isFav) {
-          await removeFavorite(item.id);
-        } else {
-          await addFavorite(item.id);
-        }
+        if (isFav) await removeFavorite(itemId);
+        else await addFavorite(itemId);
       } catch {
-        // ignore
+        // ignore (ItemDetails will toast, ItemCard stays silent)
       }
-    }, `/items/${item.id}`);
+    }, `/items/${itemId}`);
   };
 
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-    }).format(price);
-  };
+  const priceNumber = Number(item.price);
+  const formattedPrice =
+    Number.isFinite(priceNumber)
+      ? new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(priceNumber)
+      : '$0.00';
 
   return (
-    <Link href={`/items/${item.id}`}>
-      <Card
-        className="group overflow-visible cursor-pointer hover-elevate transition-all duration-200"
-        data-testid={`card-item-${item.id}`}
-      >
+    <Link href={`/items/${itemId}`}>
+      <Card className="group overflow-visible cursor-pointer hover-elevate transition-all duration-200">
         <div className="relative aspect-[3/4] overflow-hidden rounded-t-lg bg-muted">
-          {item.image ? (
+          {coverImage ? (
             <img
-              src={item.image}
+              src={coverImage}
               alt={item.title}
               className="h-full w-full object-cover transition-transform duration-300 group-hover:scale-105"
               loading="lazy"
@@ -74,38 +80,34 @@ export function ItemCard({ item }: ItemCardProps) {
               isAuthenticated && 'opacity-100'
             )}
             onClick={handleFavoriteClick}
-            data-testid={`button-favorite-${item.id}`}
+            data-testid={`button-favorite-${itemId}`}
           >
-            <Heart className={cn('h-4 w-4', isFav && 'fill-destructive text-destructive')} />
+            <Heart
+              className={cn('h-4 w-4', isFav ? 'text-destructive' : 'text-foreground')}
+              // lucide icons default to fill="none"; force-fill when favorited
+              fill={isFav ? 'currentColor' : 'none'}
+            />
           </Button>
 
           {item.is_donation && (
-            <Badge
-              className="absolute top-3 left-3 bg-primary text-primary-foreground"
-              data-testid={`badge-donation-${item.id}`}
-            >
+            <Badge className="absolute top-3 left-3 bg-primary text-primary-foreground">
               Donation
             </Badge>
           )}
         </div>
 
         <CardContent className="p-4 space-y-2">
-          <div className="flex items-start justify-between gap-2">
-            <h3 className="font-medium text-sm leading-tight line-clamp-2" data-testid={`text-item-title-${item.id}`}>
-              {item.title}
-            </h3>
-          </div>
+          <h3 className="font-medium text-sm leading-tight line-clamp-2">{item.title}</h3>
 
-          {item.category && (
-            <p className="text-xs text-muted-foreground" data-testid={`text-item-category-${item.id}`}>
-              {item.category.name}
-            </p>
+          {item.category?.name && (
+            <p className="text-xs text-muted-foreground">{item.category.name}</p>
           )}
 
           <div className="flex items-center justify-between gap-2">
-            <span className="font-semibold text-primary" data-testid={`text-item-price-${item.id}`}>
-              {item.is_donation ? 'Free' : formatPrice(item.price)}
+            <span className="font-semibold text-primary">
+              {item.is_donation ? 'Free' : formattedPrice}
             </span>
+
             {item.condition && (
               <Badge variant="secondary" className="text-xs">
                 {item.condition}

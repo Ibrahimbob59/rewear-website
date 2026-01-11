@@ -31,7 +31,7 @@ export default function MyListings() {
   const { toast } = useToast();
 
   const { data: itemsData, isLoading } = useQuery({
-    queryKey: ['/api/my-items'],
+    queryKey: ['/api/items'],
     queryFn: async () => {
       const response = await api.items.getAll();
       return response.data;
@@ -57,7 +57,14 @@ export default function MyListings() {
     },
   });
 
-  const items: Item[] = itemsData?.data || itemsData || [];
+const itemsRaw =
+  itemsData?.data?.items ??
+  itemsData?.data?.data?.items ?? // just in case backend nests it
+  itemsData?.items ??
+  itemsData?.data ??
+  [];
+
+const items: Item[] = Array.isArray(itemsRaw) ? itemsRaw : [];
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat('en-US', {

@@ -99,11 +99,14 @@ export interface Order {
   updated_at: string;
 }
 
+/**
+ * ✅ FIXED to match API docs:
+ * GET /favorites -> data.favorites[] -> { item_id, item?, favorited_at }
+ */
 export interface Favorite {
-  id: number;
   item_id: number;
-  item: Item;
-  user_id: number;
+  item?: Item;
+  favorited_at?: string;
 }
 
 export interface CartItem {
@@ -274,7 +277,6 @@ const api = {
     getAll: () =>
       axiosClient.get('/api/addresses'),
 
-    // ✅ Match doc fields (and your Checkout form)
     create: (data: {
       label: string;
       full_name: string;
@@ -298,7 +300,6 @@ const api = {
   },
 
   driverApplications: {
-    // ✅ FIX: accept FormData (multipart/form-data)
     apply: (data: FormData) =>
       axiosClient.post('/api/driver-applications', data, {
         headers: { 'Content-Type': 'multipart/form-data' },
