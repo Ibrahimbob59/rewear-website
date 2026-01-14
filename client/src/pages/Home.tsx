@@ -88,7 +88,7 @@ export default function Home() {
       <Collapsible defaultOpen>
         <CollapsibleTrigger className="flex items-center justify-between w-full py-2 font-medium">
           Categories
-          <ChevronDown className="h-4 w-4" />
+          <ChevronDown className="h-4 w-4" />\
         </CollapsibleTrigger>
         <CollapsibleContent className="pt-2 space-y-2">
           {categories.map((category) => (

@@ -1,0 +1,1108 @@
+{
+  "project": {
+    "name": "ReWear Website",
+    "version": "1.0.0",
+    "type": "Full-Stack Web Application",
+    "description": "A sustainable fashion marketplace platform that enables users to buy, sell, and donate pre-loved clothing. The platform promotes circular economy principles by giving clothes a second life and reducing textile waste.",
+    "purpose": "Final Year Project (FYP)",
+    "mission": "Join the circular fashion movement. Buy, sell, and donate pre-loved clothing to reduce textile waste and embrace ethical consumption.",
+    "tagline": "Give Your Clothes a Second Life"
+  },
+
+  "project_overview": {
+    "concept": "ReWear is a peer-to-peer marketplace for second-hand fashion that combines e-commerce functionality with environmental sustainability. Users can list items for sale or donation, browse and search for products, manage shopping carts, place orders, and track deliveries.",
+    "target_audience": [
+      "Environmentally conscious consumers",
+      "Fashion enthusiasts seeking affordable alternatives",
+      "Individuals looking to declutter sustainably",
+      "Charitable donors",
+      "Second-hand clothing shoppers"
+    ],
+    "key_values": [
+      "Sustainability - Reducing fashion waste",
+      "Circular Economy - Giving clothes new life",
+      "Community - Connecting with sellers",
+      "Accessibility - Fast delivery and local pickup"
+    ]
+  },
+
+  "technology_stack": {
+    "frontend": {
+      "framework": "React 18.3.1 with TypeScript",
+      "build_tool": "Vite 7.3.0",
+      "routing": "Wouter 3.3.5 (lightweight, React Hooks-based router)",
+      "state_management": {
+        "primary": "React Context API",
+        "server_state": "TanStack Query 5.60.5 (React Query)",
+        "local_state": "React useState, useReducer hooks"
+      },
+      "http_client": "Axios 1.13.2 with custom interceptors",
+      "form_management": "React Hook Form 7.55.0",
+      "form_validation": "Zod 3.24.2",
+      "ui_components": "shadcn/ui (built on Radix UI primitives)",
+      "styling": {
+        "framework": "TailwindCSS 3.4.17",
+        "features": [
+          "Utility-first CSS",
+          "Dark mode support via next-themes",
+          "Custom design system with CSS variables",
+          "Responsive breakpoints",
+          "Custom animations"
+        ]
+      },
+      "icons": "Lucide React 0.453.0",
+      "additional_libraries": [
+        "date-fns 3.6.0 (date formatting)",
+        "framer-motion 11.13.1 (animations)",
+        "recharts 2.15.2 (charts)"
+      ]
+    },
+    "backend": {
+      "framework": "Express.js 4.21.2",
+      "language": "TypeScript 5.6.3",
+      "runtime": "Node.js",
+      "database": {
+        "orm": "Drizzle ORM 0.39.3",
+        "database_type": "PostgreSQL (planned)",
+        "current_storage": "In-memory storage (MemStorage class)"
+      },
+      "session_management": "express-session 1.18.1",
+      "authentication": {
+        "strategy": "JWT (JSON Web Tokens)",
+        "passport": "Passport 0.7.0 with passport-local 1.0.0",
+        "token_storage": "localStorage (client-side)"
+      },
+      "file_upload": "Multer (implied for multipart/form-data handling)",
+      "development_server": "Vite dev server integrated with Express",
+      "middleware": [
+        "JSON body parsing",
+        "URL-encoded body parsing",
+        "Custom logging middleware",
+        "Error handling middleware"
+      ]
+    },
+    "shared_code": {
+      "location": "./shared directory",
+      "purpose": "Type definitions and database schemas shared between frontend and backend",
+      "validation": "Drizzle-Zod integration for type-safe schemas"
+    }
+  },
+
+  "architecture": {
+    "overall_pattern": "Three-Tier Architecture with Monolithic Structure",
+    "tiers": {
+      "presentation_layer": {
+        "location": "./client/src",
+        "technology": "React with TypeScript",
+        "responsibilities": [
+          "UI rendering",
+          "User interaction handling",
+          "Client-side routing",
+          "Form validation",
+          "State management",
+          "API communication"
+        ]
+      },
+      "application_layer": {
+        "location": "./server",
+        "technology": "Express.js with TypeScript",
+        "responsibilities": [
+          "API endpoint handling",
+          "Business logic",
+          "Request validation",
+          "Authentication/authorization",
+          "Data transformation"
+        ]
+      },
+      "data_layer": {
+        "current": "In-memory storage (Map-based)",
+        "planned": "PostgreSQL with Drizzle ORM",
+        "location": "./server/storage.ts, ./shared/schema.ts"
+      }
+    },
+    "communication_pattern": {
+      "protocol": "HTTP/HTTPS",
+      "data_format": "JSON",
+      "file_upload": "multipart/form-data",
+      "authentication": "Bearer token (JWT) in Authorization header"
+    },
+    "separation_of_concerns": {
+      "frontend": ["Components", "Pages", "Contexts", "Hooks", "Services", "Utilities"],
+      "backend": ["Routes", "Controllers", "Storage/Database", "Middleware"],
+      "shared": ["Type definitions", "Validation schemas", "Constants"]
+    }
+  },
+
+  "project_structure": {
+    "root_directory": {
+      "client/": {
+        "description": "Frontend React application",
+        "subdirectories": {
+          "src/": {
+            "components/": {
+              "description": "All React components organized by type",
+              "ui/": {
+                "description": "shadcn/ui primitive components (40+ components)",
+                "examples": [
+                  "button.tsx, card.tsx, input.tsx, form.tsx, dialog.tsx, dropdown-menu.tsx, sheet.tsx, select.tsx, toast.tsx, badge.tsx, avatar.tsx, tabs.tsx, etc."
+                ]
+              },
+              "root_components": [
+                "Header.tsx - Site navigation header with search and user menu",
+                "Footer.tsx - Site footer with links",
+                "ItemCard.tsx - Product listing card component",
+                "ItemCardSkeleton.tsx - Loading skeleton for items",
+                "ProtectedRoute.tsx - Authentication guard HOC",
+                "RequireAuthAction.tsx - Auth-required action handler",
+                "ThemeProvider.tsx - Dark mode theme provider",
+                "ThemeToggle.tsx - Dark/light mode toggle button"
+              ]
+            },
+            "contexts/": {
+              "description": "React Context providers for global state",
+              "files": [
+                {
+                  "name": "AuthContext.tsx",
+                  "purpose": "User authentication state, login/logout/register functions",
+                  "state": ["user", "accessToken", "isLoading", "isAuthenticated"],
+                  "methods": ["login()", "register()", "logout()", "requestRegistrationCode()", "updateUser()", "refreshAuthState()"]
+                },
+                {
+                  "name": "CartContext.tsx",
+                  "purpose": "Shopping cart management",
+                  "state": ["items (CartItem[])"],
+                  "methods": ["addToCart()", "removeFromCart()", "updateQuantity()", "clearCart()", "getTotal()", "getItemCount()"],
+                  "persistence": "localStorage with key 'rewear_cart'"
+                },
+                {
+                  "name": "FavoritesContext.tsx",
+                  "purpose": "User's favorite items management",
+                  "state": ["favoriteItems (Item[])", "favoriteIds (Set<number>)", "isLoading"],
+                  "methods": ["addFavorite()", "removeFavorite()", "isFavorite()", "refreshFavorites()"],
+                  "features": ["Optimistic updates", "Error handling for duplicate/unfavorite actions"]
+                }
+              ]
+            },
+            "pages/": {
+              "description": "Page-level components for each route",
+              "routes": [
+                {
+                  "path": "/",
+                  "component": "Home.tsx",
+                  "description": "Homepage with hero section, feature highlights, and product grid with filtering",
+                  "features": ["Hero with CTA buttons", "Feature cards (Eco-Friendly, Circular Economy, Community, Fast Delivery)", "Product browsing", "Advanced filtering (category, condition, size, search)", "Sorting options", "Responsive filter sheet on mobile"]
+                },
+                {
+                  "path": "/login",
+                  "component": "Login.tsx",
+                  "description": "User login page with email/password form",
+                  "features": ["Email and password validation", "Password visibility toggle", "Return URL support", "Loading states"]
+                },
+                {
+                  "path": "/register",
+                  "component": "Register.tsx",
+                  "description": "Multi-step registration with email verification",
+                  "features": ["Email verification code request", "Full name, email, phone, password fields", "Verification code input", "Password confirmation"]
+                },
+                {
+                  "path": "/items/:id",
+                  "component": "ItemDetails.tsx",
+                  "description": "Detailed view of a single item",
+                  "features": ["Image gallery", "Item information", "Seller details", "Add to cart", "Favorite toggle", "Related items"]
+                },
+                {
+                  "path": "/cart",
+                  "component": "Cart.tsx",
+                  "description": "Shopping cart page",
+                  "features": ["List cart items", "Quantity adjustment", "Remove items", "Running total", "Checkout button"]
+                },
+                {
+                  "path": "/checkout",
+                  "component": "Checkout.tsx",
+                  "protected": true,
+                  "description": "Checkout flow with address selection and payment",
+                  "features": ["Delivery address selection", "Order review", "Payment processing", "Order confirmation"]
+                },
+                {
+                  "path": "/orders",
+                  "component": "Orders.tsx",
+                  "protected": true,
+                  "description": "User's order history",
+                  "features": ["List of past orders", "Order status indicators", "Links to order details"]
+                },
+                {
+                  "path": "/orders/:id",
+                  "component": "OrderDetails.tsx",
+                  "protected": true,
+                  "description": "Detailed view of a single order",
+                  "features": ["Order items", "Delivery address", "Status timeline", "Cancel action (if pending)"]
+                },
+                {
+                  "path": "/profile",
+                  "component": "Profile.tsx",
+                  "protected": true,
+                  "description": "User profile management",
+                  "features": ["Edit profile information", "Change password", "Manage addresses"]
+                },
+                {
+                  "path": "/sell",
+                  "component": "Sell.tsx",
+                  "protected": true,
+                  "description": "List an item for sale or donation",
+                  "features": ["Multi-image upload (1-6 images)", "Title and description", "Category and condition selection", "Size, brand, color options", "Price or donation quantity toggle", "Form validation", "Image preview with removal"]
+                },
+                {
+                  "path": "/my-listings",
+                  "component": "MyListings.tsx",
+                  "protected": true,
+                  "description": "User's own item listings",
+                  "features": ["List own items", "Toggle availability status", "Edit items", "Delete items"]
+                },
+                {
+                  "path": "/favorites",
+                  "component": "Favorites.tsx",
+                  "protected": true,
+                  "description": "User's favorite items",
+                  "features": ["Grid of favorited items", "Remove from favorites", "Empty state"]
+                },
+                {
+                  "path": "/apply-driver",
+                  "component": "ApplyDriver.tsx",
+                  "protected": true,
+                  "description": "Delivery driver application form",
+                  "features": ["Personal information", "Vehicle details", "Document upload"]
+                },
+                {
+                  "path": "*",
+                  "component": "not-found.tsx",
+                  "description": "404 Not Found page"
+                }
+              ]
+            },
+            "services/": {
+              "description": "API client and service layer",
+              "files": [
+                {
+                  "name": "axiosClient.ts",
+                  "purpose": "Axios instance configuration with interceptors",
+                  "features": [
+                    "Base URL configuration (VITE_API_BASE_URL)",
+                    "Request interceptor for token injection",
+                    "Response interceptor for automatic token refresh",
+                    "Queue mechanism for concurrent 401 handling",
+                    "FormData handling"
+                  ]
+                },
+                {
+                  "name": "api.ts",
+                  "purpose": "Centralized API endpoint definitions with TypeScript types",
+                  "endpoints": {
+                    "auth": [
+                      "requestCode() - POST /api/auth/register-code",
+                      "resendCode() - POST /api/auth/resend-code",
+                      "register() - POST /api/auth/register",
+                      "login() - POST /api/auth/login",
+                      "logout() - POST /api/auth/logout",
+                      "logoutAll() - POST /api/auth/logout-all",
+                      "me() - GET /api/auth/me",
+                      "refreshToken() - POST /api/auth/refresh-token",
+                      "validateToken() - POST /api/auth/validate",
+                      "updateProfile() - PUT /api/auth/profile",
+                      "changePassword() - PUT /api/auth/password"
+                    ],
+                    "items": [
+                      "getAll() - GET /api/items",
+                      "getById() - GET /api/items/:id",
+                      "create() - POST /api/items",
+                      "update() - PUT /api/items/:id",
+                      "delete() - DELETE /api/items/:id",
+                      "getMyListings() - GET /api/items/my-listings",
+                      "toggleStatus() - POST /api/items/:id/toggle-status"
+                    ],
+                    "orders": [
+                      "create() - POST /api/orders",
+                      "getAll() - GET /api/orders",
+                      "getAsSeller() - GET /api/orders/as-seller",
+                      "getById() - GET /api/orders/:id",
+                      "cancel() - PUT /api/orders/:id/cancel",
+                      "confirm() - POST /api/orders/:id/confirm"
+                    ],
+                    "favorites": [
+                      "getAll() - GET /api/favorites",
+                      "add() - POST /api/favorites/:itemId",
+                      "remove() - DELETE /api/favorites/:itemId"
+                    ],
+                    "addresses": [
+                      "getAll() - GET /api/addresses",
+                      "create() - POST /api/addresses",
+                      "update() - PUT /api/addresses/:id",
+                      "delete() - DELETE /api/addresses/:id"
+                    ],
+                    "driverApplications": [
+                      "apply() - POST /api/driver-applications",
+                      "getMyApplication() - GET /api/driver-applications/my-application",
+                      "checkEligibility() - GET /api/driver-applications/eligibility"
+                    ],
+                    "notifications": [
+                      "getAll() - GET /api/notifications",
+                      "getUnreadCount() - GET /api/notifications/unread-count",
+                      "markAsRead() - POST /api/notifications/:id/mark-read",
+                      "markAllAsRead() - POST /api/notifications/mark-all-read"
+                    ],
+                    "stats": [
+                      "getPlatformStats() - GET /api/admin/stats"
+                    ],
+                    "maps": [
+                      "calculateDeliveryFee() - POST /api/calculate-delivery-fee"
+                    ]
+                  },
+                  "typescript_interfaces": {
+                    "User": "id, full_name, name, email, phone, address, avatar, role, email_verified_at",
+                    "Item": "id, title, description, price, images, primary_image, category_id, category, user_id, user/seller, status, condition, size, brand, is_donation, created_at, updated_at",
+                    "Category": "id, name, slug",
+                    "Address": "id, label, full_name, phone, address_line1, address_line2, city, state, postal_code, country, latitude, longitude, is_default",
+                    "Order": "id, user_id, items, total/total_amount, status, shipping_address, delivery_address, created_at, updated_at",
+                    "Favorite": "item_id, item, favorited_at",
+                    "CartItem": "item, quantity",
+                    "LoginData": "email, password",
+                    "RegisterData": "full_name, email, phone, password, password_confirmation, verification_code",
+                    "ItemFilters": "category_id, search, min_price, max_price, condition, size, sort, status"
+                  }
+                }
+              ]
+            },
+            "hooks/": {
+              "description": "Custom React hooks",
+              "examples": ["use-toast.ts - Toast notification hook"]
+            },
+            "lib/": {
+              "description": "Utility functions and configurations",
+              "files": [
+                "queryClient.ts - TanStack Query client configuration",
+                "utils.ts - Utility functions (cn for className merging)"
+              ]
+            }
+          },
+          "public/": {
+            "description": "Static assets served directly",
+            "assets": ["rewear-website-background.png - Hero section background image"]
+          },
+          "index.html": "Entry HTML file for the React app"
+        }
+      },
+      "server/": {
+        "description": "Backend Express server",
+        "files": [
+          {
+            "name": "index.ts",
+            "purpose": "Main server entry point",
+            "features": [
+              "Express app initialization",
+              "HTTP server creation",
+              "JSON/URL-encoded body parsing middleware",
+              "Custom logging middleware for API requests",
+              "Route registration",
+              "Error handling middleware",
+              "Static file serving (production)",
+              "Vite dev server integration (development)"
+            ],
+            "port": "5000 (default, configurable via PORT env var)",
+            "host": "0.0.0.0 (all interfaces)"
+          },
+          {
+            "name": "routes.ts",
+            "purpose": "API route definitions",
+            "current_state": "Placeholder implementation",
+            "note": "Actual API endpoints are served by a separate backend (likely Laravel-based)"
+          },
+          {
+            "name": "storage.ts",
+            "purpose": "Storage interface and in-memory implementation",
+            "interface": "IStorage with getUser(), getUserByUsername(), createUser()",
+            "implementation": "MemStorage class using Map for data storage"
+          },
+          {
+            "name": "vite.ts",
+            "purpose": "Vite development server configuration for SSR"
+          },
+          {
+            "name": "static.ts",
+            "purpose": "Static file serving for production builds"
+          }
+        ]
+      },
+      "shared/": {
+        "description": "Code shared between frontend and backend",
+        "files": [
+          {
+            "name": "schema.ts",
+            "purpose": "Database schema definitions using Drizzle ORM",
+            "current_tables": [
+              {
+                "name": "users",
+                "columns": [
+                  {"name": "id", "type": "varchar", "primary_key": true, "default": "gen_random_uuid()"},
+                  {"name": "username", "type": "text", "constraints": "not null, unique"},
+                  {"name": "password", "type": "text", "constraints": "not null"}
+                ]
+              }
+            ],
+            "derived_schemas": ["insertUserSchema - for user creation validation"],
+            "typescript_types": ["InsertUser", "User"],
+            "note": "Schema is minimal; full e-commerce schema would be needed for production"
+          }
+        ]
+      },
+      "script/": {
+        "description": "Build and utility scripts",
+        "files": ["build.ts - Production build script"]
+      },
+      "attached_assets/": {
+        "description": "Design assets, mockups, and documentation images"
+      },
+      "configuration_files": {
+        "package.json": "Project dependencies and scripts",
+        "tsconfig.json": "TypeScript configuration",
+        "tailwind.config.ts": "TailwindCSS customization",
+        "vite.config.ts": "Vite build tool configuration",
+        ".env": "Environment variables (VITE_API_BASE_URL)",
+        "drizzle.config.ts": "Drizzle ORM configuration",
+        "postcss.config.js": "PostCSS configuration for Tailwind"
+      }
+    }
+  },
+
+  "authentication_system": {
+    "overview": "JWT-based authentication with refresh token mechanism",
+    "flow": {
+      "registration": [
+        "User enters email and requests verification code",
+        "Backend sends 6-digit code to email",
+        "User enters full name, phone, password, and verification code",
+        "Backend validates code and creates account",
+        "Backend returns access_token, refresh_token, and user data",
+        "Frontend stores tokens in localStorage and updates auth state"
+      ],
+      "login": [
+        "User submits email and password",
+        "Backend validates credentials",
+        "Backend returns access_token, refresh_token, and user data",
+        "Frontend stores tokens and redirects to return URL or home"
+      ],
+      "token_refresh": [
+        "API request returns 401 Unauthorized",
+        "Axios interceptor catches the error",
+        "If refresh is already in progress, request is queued",
+        "Using refresh_token, call /api/auth/refresh-token",
+        "Backend validates and returns new access_token and optionally new refresh_token",
+        "New tokens stored in localStorage",
+        "Original request retried with new token",
+        "Queued requests processed with new token"
+      ],
+      "logout": [
+        "User clicks logout",
+        "Frontend calls /api/auth/logout (optional)",
+        "Frontend clears tokens from localStorage",
+        "Frontend clears user data from state",
+        "User redirected to home"
+      ]
+    },
+    "token_storage": {
+      "access_token": "localStorage key 'access_token' (short-lived)",
+      "refresh_token": "localStorage key 'refresh_token' (long-lived)",
+      "user_data": "localStorage key 'user' (cached user info)",
+      "security_note": "Consider using httpOnly cookies for better security"
+    },
+    "protected_routes": {
+      "mechanism": "ProtectedRoute HOC component",
+      "implementation": "Checks isAuthenticated and isLoading from AuthContext",
+      "behavior": "Shows loading spinner while checking auth, redirects to login with returnUrl if not authenticated",
+      "protected_pages": ["/checkout", "/orders", "/orders/:id", "/profile", "/sell", "/my-listings", "/favorites", "/apply-driver"]
+    },
+    "http_integration": {
+      "request_header": "Authorization: Bearer {access_token}",
+      "automatic_injection": "Axios request interceptor adds token to all requests",
+      "automatic_refresh": "Axios response interceptor handles 401 and refreshes token",
+      "concurrent_handling": "Queue mechanism prevents multiple refresh attempts"
+    }
+  },
+
+  "features": {
+    "core_features": {
+      "marketplace_browsing": {
+        "description": "Browse available items without authentication",
+        "capabilities": [
+          "View all items in a grid layout",
+          "Search items by title",
+          "Filter by category (Women's, Men's, Kids, Accessories, Shoes)",
+          "Filter by condition (New, Like New, Good, Fair)",
+          "Filter by size (XS to XXL)",
+          "Sort by newest or price (low to high, high to low)",
+          "Responsive design with mobile filter sheet",
+          "Active filter indicators with quick removal"
+        ]
+      },
+      "product_viewing": {
+        "description": "Detailed view of individual items",
+        "capabilities": [
+          "Image gallery with multiple images",
+          "Primary image display",
+          "Title and description",
+          "Price or donation indicator",
+          "Category and condition badges",
+          "Size and brand information",
+          "Seller details",
+          "Add to cart button",
+          "Favorite toggle (authenticated users)"
+        ]
+      },
+      "shopping_cart": {
+        "description": "Manage items before checkout",
+        "capabilities": [
+          "Add items to cart",
+          "View cart contents",
+          "Update quantities",
+          "Remove items",
+          "See running total",
+          "Persistent across sessions (localStorage)",
+          "Cart badge in header showing item count"
+        ]
+      },
+      "user_accounts": {
+        "description": "User registration and profile management",
+        "capabilities": [
+          "Email-based registration with verification",
+          "Secure login with JWT tokens",
+          "Profile editing (name, email, phone, address)",
+          "Password change",
+          "Avatar display with initials",
+          "Multiple saved addresses"
+        ]
+      },
+      "selling_system": {
+        "description": "List items for sale or donation",
+        "capabilities": [
+          "Upload 1-6 images per listing",
+          "Provide title and detailed description",
+          "Select category (Tops, Bottoms, Dresses, Outerwear, Shoes, Accessories, Other)",
+          "Select condition (New, Like New, Good, Fair)",
+          "Specify size (XS to One Size)",
+          "Add brand and color",
+          "Choose between sale or donation",
+          "Set price (for sale) or quantity (for donation)",
+          "Manage own listings",
+          "Toggle item availability"
+        ]
+      },
+      "favorites": {
+        "description": "Save items for later",
+        "capabilities": [
+          "Add items to favorites",
+          "Remove from favorites",
+          "View all favorites in a grid",
+          "Heart icon indicator on item cards",
+          "Optimistic UI updates",
+          "Authentication required"
+        ]
+      },
+      "order_management": {
+        "description": "Track and manage orders",
+        "capabilities": [
+          "View order history",
+          "See order details",
+          "Track order status (pending, confirmed, shipped, delivered, cancelled)",
+          "Cancel pending orders",
+          "View order as buyer and seller"
+        ]
+      },
+      "delivery_system": {
+        "description": "Local delivery with driver network",
+        "capabilities": [
+          "Select delivery address",
+          "Calculate delivery fee based on distance",
+          "Apply to become a delivery driver",
+          "Driver application form with document upload"
+        ]
+      },
+      "notifications": {
+        "description": "Stay updated on activities",
+        "capabilities": [
+          "View all notifications",
+          "See unread count",
+          "Mark notifications as read",
+          "Mark all as read"
+        ]
+      }
+    },
+    "user_flows": {
+      "buyer_flow": [
+        "Visit homepage (no login required)",
+        "Browse and filter products",
+        "View item details",
+        "Add items to cart",
+        "Login/register when prompted",
+        "Proceed to checkout",
+        "Select delivery address",
+        "Complete order",
+        "Track order status in Orders page"
+      ],
+      "seller_flow": [
+        "Login to account",
+        "Navigate to Sell page",
+        "Fill in item details",
+        "Upload images",
+        "Choose sale or donation",
+        "Submit listing",
+        "Manage listings in My Listings page",
+        "Receive orders",
+        "Confirm and fulfill orders"
+      ],
+      "donor_flow": [
+        "Login to account",
+        "Navigate to Sell page",
+        "Fill in item details",
+        "Upload images",
+        "Enable donation toggle",
+        "Set donation quantity",
+        "Submit as donation",
+        "Item marked as free with 'Donation' badge"
+      ]
+    }
+  },
+
+  "data_models": {
+    "current_schema": {
+      "users_table": {
+        "columns": {
+          "id": "UUID primary key",
+          "username": "Text, unique, not null",
+          "password": "Text, not null (hashed)"
+        }
+      }
+    },
+    "frontend_types": {
+      "User": {
+        "id": "number",
+        "full_name": "string",
+        "name": "string (optional, alias for full_name)",
+        "email": "string",
+        "phone": "string (optional)",
+        "address": "string (optional)",
+        "avatar": "string (optional, URL)",
+        "role": "string (optional)",
+        "email_verified_at": "string (optional, ISO timestamp)"
+      },
+      "Item": {
+        "id": "number",
+        "title": "string",
+        "description": "string",
+        "price": "number (USD)",
+        "image": "string (optional, legacy)",
+        "images": "Array<string | ItemImage>",
+        "primary_image": "string (optional, URL)",
+        "category_id": "number",
+        "category": "Category object",
+        "user_id": "number",
+        "user": "User object (seller info)",
+        "seller": "User object (alias for user)",
+        "status": "'available' | 'sold' | 'pending'",
+        "condition": "string ('New', 'Like New', 'Good', 'Fair')",
+        "size": "string (optional, 'XS' to 'XXL')",
+        "brand": "string (optional)",
+        "is_donation": "boolean",
+        "created_at": "string (ISO timestamp)",
+        "updated_at": "string (ISO timestamp)"
+      },
+      "ItemImage": {
+        "id": "number",
+        "url": "string",
+        "display_order": "number (optional)",
+        "is_primary": "boolean (optional)"
+      },
+      "Category": {
+        "id": "number",
+        "name": "string",
+        "slug": "string"
+      },
+      "Address": {
+        "id": "number",
+        "label": "string (e.g., 'Home', 'Work')",
+        "full_name": "string",
+        "phone": "string",
+        "address_line1": "string",
+        "address_line2": "string (optional)",
+        "city": "string",
+        "state": "string",
+        "postal_code": "string",
+        "country": "string",
+        "latitude": "number",
+        "longitude": "number",
+        "is_default": "boolean",
+        "created_at": "string (optional)",
+        "updated_at": "string (optional)"
+      },
+      "Order": {
+        "id": "number",
+        "user_id": "number",
+        "items": "Array<any>",
+        "total": "number (optional)",
+        "total_amount": "number (optional)",
+        "status": "'pending' | 'confirmed' | 'shipped' | 'delivered' | 'cancelled'",
+        "shipping_address": "string (optional)",
+        "delivery_address": "Address object (optional)",
+        "created_at": "string (ISO timestamp)",
+        "updated_at": "string (ISO timestamp)"
+      },
+      "CartItem": {
+        "item": "Item object",
+        "quantity": "number"
+      }
+    },
+    "production_schema_requirements": {
+      "needed_tables": [
+        {
+          "name": "users",
+          "columns": ["id", "full_name", "email", "phone", "password_hash", "avatar", "role", "email_verified_at", "created_at", "updated_at"]
+        },
+        {
+          "name": "categories",
+          "columns": ["id", "name", "slug", "created_at", "updated_at"]
+        },
+        {
+          "name": "items",
+          "columns": ["id", "user_id", "category_id", "title", "description", "price", "is_donation", "donation_quantity", "condition", "size", "brand", "color", "status", "created_at", "updated_at"]
+        },
+        {
+          "name": "item_images",
+          "columns": ["id", "item_id", "url", "display_order", "is_primary", "created_at"]
+        },
+        {
+          "name": "orders",
+          "columns": ["id", "buyer_id", "seller_id", "item_id", "delivery_address_id", "delivery_fee", "total_amount", "status", "created_at", "updated_at"]
+        },
+        {
+          "name": "addresses",
+          "columns": ["id", "user_id", "label", "full_name", "phone", "address_line1", "address_line2", "city", "state", "postal_code", "country", "latitude", "longitude", "is_default", "created_at", "updated_at"]
+        },
+        {
+          "name": "favorites",
+          "columns": ["id", "user_id", "item_id", "created_at"]
+        },
+        {
+          "name": "driver_applications",
+          "columns": ["id", "user_id", "status", "vehicle_type", "vehicle_make", "vehicle_model", "vehicle_year", "license_number", "document_url", "created_at", "updated_at"]
+        },
+        {
+          "name": "notifications",
+          "columns": ["id", "user_id", "type", "title", "message", "is_read", "created_at"]
+        },
+        {
+          "name": "refresh_tokens",
+          "columns": ["id", "user_id", "token", "expires_at", "created_at"]
+        }
+      ]
+    }
+  },
+
+  "design_system": {
+    "color_scheme": {
+      "philosophy": "Earth-toned palette reflecting sustainability and nature",
+      "primary_colors": {
+        "primary": "Forest green (HSL with CSS variable)",
+        "secondary": "Beige/off-white",
+        "accent": "Soft brown/terracotta"
+      },
+      "css_variables": {
+        "--background": "Base background color",
+        "--foreground": "Base text color",
+        "--primary": "Primary brand color (forest green)",
+        "--primary-foreground": "Text on primary background",
+        "--secondary": "Secondary color (beige)",
+        "--secondary-foreground": "Text on secondary background",
+        "--muted": "Muted/disabled state",
+        "--accent": "Accent/highlight color",
+        "--destructive": "Error/danger color",
+        "--border": "Border color",
+        "--ring": "Focus ring color",
+        "--card": "Card background",
+        "--popover": "Popover background"
+      },
+      "dark_mode": {
+        "enabled": true,
+        "toggle": "ThemeToggle component in header",
+        "persistence": "User preference saved"
+      }
+    },
+    "typography": {
+      "font_families": {
+        "sans": "System font stack (Inter-like)",
+        "serif": "System serif stack",
+        "mono": "Monospace for code"
+      },
+      "scale": [
+        "text-xs (0.75rem)",
+        "text-sm (0.875rem)",
+        "text-base (1rem)",
+        "text-lg (1.125rem)",
+        "text-xl (1.25rem)",
+        "text-2xl (1.5rem)",
+        "text-3xl (1.875rem)",
+        "text-4xl (2.25rem)",
+        "text-5xl (3rem)",
+        "text-6xl (3.75rem)"
+      ]
+    },
+    "spacing": {
+      "system": "Tailwind's spacing scale (0.25rem increments)",
+      "usage": "Consistent padding and margins throughout"
+    },
+    "border_radius": {
+      "lg": "0.5625rem (9px)",
+      "md": "0.375rem (6px)",
+      "sm": "0.1875rem (3px)"
+    },
+    "shadows": {
+      "subtle": "Used on cards and elevated elements",
+      "hover": "Increased shadow on hover states"
+    },
+    "animations": {
+      "custom": [
+        "accordion-down",
+        "accordion-up"
+      ],
+      "transitions": "200-300ms ease-out for hover states and interactions"
+    },
+    "components": {
+      "button": {
+        "variants": ["default", "destructive", "outline", "secondary", "ghost", "link"],
+        "sizes": ["default", "sm", "lg", "icon"]
+      },
+      "input": {
+        "features": ["Consistent padding", "Focus ring", "Error states", "Icon support"]
+      },
+      "card": {
+        "structure": "Card > CardHeader > CardTitle + CardDescription, CardContent, CardFooter",
+        "hover_effect": "Elevation and scale transform"
+      }
+    }
+  },
+
+  "api_integration": {
+    "base_url": {
+      "environment_variable": "VITE_API_BASE_URL",
+      "default": "http://127.0.0.1:8000",
+      "note": "Separate backend server (likely Laravel-based) handles actual business logic"
+    },
+    "request_format": {
+      "content_type": "application/json",
+      "file_upload": "multipart/form-data",
+      "authentication": "Bearer token in Authorization header"
+    },
+    "response_format": {
+      "structure": {
+        "success": "boolean",
+        "message": "string",
+        "data": "object|array (actual response data)",
+        "meta": "object (pagination info, etc.)"
+      }
+    },
+    "error_handling": {
+      "http_statuses": {
+        "200": "Success",
+        "201": "Created",
+        "400": "Bad Request (validation errors)",
+        "401": "Unauthorized (needs login or token refresh)",
+        "403": "Forbidden",
+        "404": "Not Found",
+        "422": "Validation Error",
+        "500": "Server Error"
+      },
+      "client_handling": "Toast notifications for user-visible errors"
+    }
+  },
+
+  "build_and_development": {
+    "scripts": {
+      "dev": "cross-env NODE_ENV=development tsx server/index.ts - Starts development server with Vite HMR",
+      "build": "tsx script/build.ts - Builds for production",
+      "start": "NODE_ENV=production node dist/index.cjs - Starts production server",
+      "check": "tsc - TypeScript type checking",
+      "db:push": "drizzle-kit push - Push schema changes to database"
+    },
+    "development": {
+      "port": "5000",
+      "hot_reload": "Vite HMR enabled",
+      "api_proxy": "Requests to /api proxied to backend"
+    },
+    "production": {
+      "build_output": "./dist directory",
+      "static_serving": "Express serves static files",
+      "optimizations": [
+        "Code splitting",
+        "Tree shaking",
+        "Minification",
+        "Asset optimization"
+      ]
+    }
+  },
+
+  "environment_variables": {
+    "required": {
+      "VITE_API_BASE_URL": "Backend API URL (default: http://127.0.0.1:8000)"
+    },
+    "optional": {
+      "PORT": "Server port (default: 5000)",
+      "NODE_ENV": "Environment (development/production)"
+    }
+  },
+
+  "dependencies": {
+    "key_production_dependencies": [
+      {"name": "react", "version": "^18.3.1", "purpose": "UI framework"},
+      {"name": "react-dom", "version": "^18.3.1", "purpose": "React DOM renderer"},
+      {"name": "express", "version": "^4.21.2", "purpose": "Backend framework"},
+      {"name": "axios", "version": "^1.13.2", "purpose": "HTTP client"},
+      {"name": "@tanstack/react-query", "version": "^5.60.5", "purpose": "Server state management"},
+      {"name": "wouter", "version": "^3.3.5", "purpose": "Routing"},
+      {"name": "react-hook-form", "version": "^7.55.0", "purpose": "Form management"},
+      {"name": "zod", "version": "^3.24.2", "purpose": "Schema validation"},
+      {"name": "tailwindcss", "version": "^3.4.17", "purpose": "Styling"},
+      {"name": "drizzle-orm", "version": "^0.39.3", "purpose": "Database ORM"},
+      {"name": "lucide-react", "version": "^0.453.0", "purpose": "Icons"},
+      {"name": "next-themes", "version": "^0.4.6", "purpose": "Dark mode support"}
+    ],
+    "key_dev_dependencies": [
+      {"name": "typescript", "version": "5.6.3", "purpose": "Type checking"},
+      {"name": "vite", "version": "^7.3.0", "purpose": "Build tool"},
+      {"name": "@vitejs/plugin-react", "version": "^4.7.0", "purpose": "Vite React plugin"},
+      {"name": "tsx", "version": "^4.20.5", "purpose": "TypeScript execution"},
+      {"name": "drizzle-kit", "version": "^0.31.8", "purpose": "Database CLI"},
+      {"name": "autoprefixer", "version": "^10.4.20", "purpose": "CSS vendor prefixes"}
+    ]
+  },
+
+  "security_considerations": {
+    "current_implementation": {
+      "authentication": "JWT with refresh tokens",
+      "password_storage": "Hashed (backend responsibility)",
+      "input_validation": "Zod schemas on frontend, backend validation required"
+    },
+    "improvements_needed": [
+      "Move token storage to httpOnly cookies instead of localStorage",
+      "Implement CSRF protection",
+      "Add rate limiting on API endpoints",
+      "Implement content security policy (CSP)",
+      "Add CORS configuration",
+      "Sanitize user inputs to prevent XSS",
+      "Implement file upload validation and scanning",
+      "Add API request signing for sensitive operations"
+    ]
+  },
+
+  "accessibility": {
+    "features": [
+      "Semantic HTML elements",
+      "ARIA labels on interactive elements",
+      "Keyboard navigation support",
+      "Focus indicators",
+      "Screen reader friendly text",
+      "Color contrast considerations",
+      "Form error messages and descriptions"
+    ],
+    "tools_used": ["Radix UI primitives (built with accessibility in mind)"]
+  },
+
+  "responsive_design": {
+    "breakpoints": {
+      "mobile": "default (< 640px)",
+      "sm": "640px (small tablets)",
+      "md": "768px (tablets)",
+      "lg": "1024px (laptops)",
+      "xl": "1280px (desktops)",
+      "2xl": "1536px (large screens)"
+    },
+    "mobile_optimizations": [
+      "Collapsible filter sheet (bottom sheet on mobile)",
+      "Hamburger menu for navigation",
+      "Responsive grid layouts (1 column on mobile, up to 4 on desktop)",
+      "Touch-friendly button sizes",
+      "Responsive images with lazy loading"
+    ]
+  },
+
+  "testing": {
+    "current_state": "No test files present in the codebase",
+    "recommendations": [
+      "Add unit tests for utility functions (Vitest)",
+      "Add component tests (React Testing Library)",
+      "Add E2E tests (Playwright or Cypress)",
+      "Test authentication flows",
+      "Test form validation",
+      "Test API integration with mocks"
+    ]
+  },
+
+  "future_enhancements": {
+    "features": [
+      "Real-time chat between buyers and sellers",
+      "Review and rating system",
+      "Offer/counter-offer functionality",
+      "Advanced search with filters",
+      "Wishlist collections",
+      "Social sharing",
+      "Recommendation engine",
+      "Analytics dashboard for sellers",
+      "Push notifications",
+      "Multi-language support",
+      "Payment gateway integration",
+      "Inventory management for sellers"
+    ],
+    "technical": [
+      "Migrate to full PostgreSQL database",
+      "Implement caching (Redis)",
+      "Add image CDN integration",
+      "Implement WebSocket for real-time features",
+      "Add proper logging system",
+      "Implement monitoring and analytics",
+      "Add SEO optimization",
+      "Implement service worker for offline support"
+    ]
+  },
+
+  "project_status": {
+    "development_stage": "Frontend complete, backend scaffold present, actual API served by separate Laravel backend",
+    "known_limitations": [
+      "In-memory storage only (no database)",
+      "Backend routes are placeholders",
+      "No actual API implementation in this codebase",
+      "No tests",
+      "Minimal database schema"
+    ],
+    "working_features": [
+      "Complete frontend UI",
+      "Client-side routing",
+      "Authentication flow (UI and state)",
+      "Shopping cart management",
+      "Favorites management",
+      "Form validations",
+      "Responsive design",
+      "Dark mode",
+      "API integration with external backend"
+    ]
+  },
+
+  "summary": {
+    "project_description": "ReWear is a comprehensive sustainable fashion marketplace platform built with React, TypeScript, Express.js, and TailwindCSS. The frontend is fully functional with all UI components, authentication flows, shopping cart, favorites, and seller features implemented. The project promotes circular economy principles by enabling users to buy, sell, and donate pre-loved clothing. The application uses JWT authentication with refresh tokens, implements optimistic UI updates, and follows modern React patterns with hooks, context, and React Query for state management.",
+    "key_strengths": [
+      "Modern, responsive UI with excellent UX",
+      "Clean, maintainable code structure",
+      "Type-safe with TypeScript throughout",
+      "Comprehensive form validation with Zod",
+      "Efficient state management with React Query",
+      "Accessible components via Radix UI",
+      "Dark mode support",
+      "Optimistic UI updates"
+    ],
+    "educational_value": "This project demonstrates full-stack development skills, modern React patterns, authentication implementation, state management, form handling, API integration, responsive design, and sustainable technology principles."
+  }
+}
